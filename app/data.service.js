@@ -1,11 +1,24 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 /**
  * Created by Roman on 10.08.2017.
  */
+var core_1 = require("@angular/core");
 var data_ts_1 = require("../data.ts");
+var http_service_ts_1 = require("./http.service.ts");
+var log_service_ts_1 = require("./log.service.ts");
 var DataService = (function () {
-    function DataService(httpService) {
+    function DataService(httpService, logService) {
         this.httpService = httpService;
+        this.logService = logService;
         this.rooms = [
             { name: "livingroom" },
             { name: "kitchen" },
@@ -26,6 +39,7 @@ var DataService = (function () {
     DataService.prototype.generateData = function (seriesRooms, dataPoints) {
         if (seriesRooms === void 0) { seriesRooms = 1; }
         if (dataPoints === void 0) { dataPoints = 12; }
+        this.logService.write("!-----Генерация данных");
         var results = [];
         var domain = [];
         for (var j = 0; j < dataPoints; j++) {
@@ -50,8 +64,15 @@ var DataService = (function () {
         return results;
     };
     DataService.prototype.getData = function () {
+        this.logService.write("!-----Запрос данных в httpService");
+        this.httpService.requestData();
     };
     return DataService;
 }());
+DataService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [typeof (_a = typeof http_service_ts_1.HttpService !== "undefined" && http_service_ts_1.HttpService) === "function" && _a || Object, typeof (_b = typeof log_service_ts_1.LogService !== "undefined" && log_service_ts_1.LogService) === "function" && _b || Object])
+], DataService);
 exports.DataService = DataService;
+var _a, _b;
 //# sourceMappingURL=data.service.js.map

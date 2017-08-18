@@ -21,7 +21,7 @@ var HttpService = (function () {
     function HttpService(http) {
         this.http = http;
     }
-    HttpService.prototype.getData = function () {
+    HttpService.prototype.requestData = function () {
         //return this.http.get('https://www.yandex.ru/');
         return this.http.get('../test.json')
             .map(function (resp) {

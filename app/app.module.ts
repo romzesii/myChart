@@ -3,11 +3,11 @@
  */
 
 import {NgModule} from '@angular/core';
+import {DataService} from './data.service.ts';
 import { HttpModule }  from '@angular/http';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import {BrowserModule} from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-//import { HttpModule }  from '@angular/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser-animations';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 import { App  } from './app.ts';

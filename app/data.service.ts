@@ -1,8 +1,12 @@
 /**
  * Created by Roman on 10.08.2017.
  */
+import {Injectable} from '@angular/core';
 import {Rooms} from '../data.ts';
-import { HttpService} from './http.service.ts';
+import {HttpService} from './http.service.ts';
+import {LogService} from './log.service.ts';
+
+@Injectable()
 export class DataService{
 
     private rooms: Rooms[] = [
@@ -12,7 +16,7 @@ export class DataService{
         { name: "bathroom"},
         { name: "playroom"}
     ];
-    constructor(private httpService: HttpService){}
+    constructor(private httpService: HttpService, private logService: LogService){}
 
     getRooms(): Rooms[] {
 
@@ -27,6 +31,7 @@ export class DataService{
     }
 
     generateData(seriesRooms: number = 1, dataPoints: number = 12){
+        this.logService.write("!-----Генерация данных");
         const results = [];
         const domain: Date[] = [];
 
@@ -56,7 +61,8 @@ export class DataService{
         return results;
     }
     getData(){
-
+        this.logService.write("!-----Запрос данных в httpService");
+        this.httpService.requestData();
 
 
     }

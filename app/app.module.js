@@ -13,7 +13,6 @@ var http_1 = require("@angular/http");
 var platform_browser_dynamic_1 = require("@angular/platform-browser-dynamic");
 var platform_browser_1 = require("@angular/platform-browser");
 var forms_1 = require("@angular/forms");
-//import { HttpModule }  from '@angular/http';
 var platform_browser_animations_1 = require("@angular/platform-browser-animations");
 var ngx_charts_1 = require("@swimlane/ngx-charts");
 var app_ts_1 = require("./app.ts");

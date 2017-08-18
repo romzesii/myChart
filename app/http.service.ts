@@ -16,7 +16,7 @@ export class HttpService{
 
     constructor(private http: Http){}
 
-    getData() : Observable<Test[]> {
+    requestData() : Observable<Test[]> {
         //return this.http.get('https://www.yandex.ru/');
         return this.http.get('../test.json')
             .map((resp:Response)=>{
