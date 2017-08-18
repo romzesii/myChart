@@ -4,7 +4,8 @@
  */
 var data_ts_1 = require("../data.ts");
 var DataService = (function () {
-    function DataService() {
+    function DataService(httpService) {
+        this.httpService = httpService;
         this.rooms = [
             { name: "livingroom" },
             { name: "kitchen" },
@@ -47,6 +48,8 @@ var DataService = (function () {
         }
         //console.log(results);
         return results;
+    };
+    DataService.prototype.getData = function () {
     };
     return DataService;
 }());

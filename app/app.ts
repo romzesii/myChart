@@ -7,7 +7,7 @@ import {Component, OnInit} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {single, multi} from '../data.ts';
 import {DataService} from './data.service.ts';
-import { HttpService} from './http.service.ts';
+//import { HttpService} from './http.service.ts';
 import { Test } from '../app/test.ts';
 /*
 
@@ -24,7 +24,7 @@ import {NgxChartsModule} from '@swimlane/ngx-charts';
 */
 @Component({
     selector: 'my-app',
-    providers: [DataService, HttpService],
+    providers: [DataService],
     template: `
     <ngx-charts-line-chart
       [view]="view"
@@ -74,7 +74,7 @@ export class App implements OnInit {
     // line, area
     autoScale = true;
 
-    constructor(private dataService: DataService, private httpService: HttpService) {
+    constructor(private dataService: DataService) {
         Object.assign(this, {single, multi});
         //this.rooms = rooms;
         //this.dataService.generateData(count);
@@ -85,13 +85,15 @@ export class App implements OnInit {
         setInterval(this.updateData.bind(this), 4000);
         //console.log(this.httpService.getData());
         //this.httpService.getData().subscribe((data)=>this.test=data);
+        /*
         this.httpService.getData()
             .subscribe(
                 data=>this.test=data,
                 error => {this.error = error; console.log(error);}
             );
-
-
+        */
+        this.multi = this.dataService.getData(); //todo getData() method
+        console.log(this.multi);
         //console.log(this.httpService.getData().subscribe((data)=>this.test=data));
 
     }

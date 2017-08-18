@@ -15,7 +15,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require("@angular/core");
 var data_ts_1 = require("../data.ts");
 var data_service_ts_1 = require("./data.service.ts");
-var http_service_ts_1 = require("./http.service.ts");
 /*
 
 import { FormsModule } from '@angular/forms';
@@ -30,9 +29,8 @@ import {NgxChartsModule} from '@swimlane/ngx-charts';
 //import { AppModule } from '../app/app.module.ts';
 */
 var App = (function () {
-    function App(dataService, httpService) {
+    function App(dataService) {
         this.dataService = dataService;
-        this.httpService = httpService;
         this.view = [700, 400];
         // options
         this.showXAxis = true;
@@ -59,12 +57,18 @@ var App = (function () {
     }
     //todo update data
     App.prototype.ngOnInit = function () {
-        var _this = this;
         setInterval(this.updateData.bind(this), 4000);
         //console.log(this.httpService.getData());
         //this.httpService.getData().subscribe((data)=>this.test=data);
+        /*
         this.httpService.getData()
-            .subscribe(function (data) { return _this.test = data; }, function (error) { _this.error = error; console.log(error); });
+            .subscribe(
+                data=>this.test=data,
+                error => {this.error = error; console.log(error);}
+            );
+        */
+        this.multi = this.dataService.getData(); //todo getData() method
+        console.log(this.multi);
         //console.log(this.httpService.getData().subscribe((data)=>this.test=data));
     };
     App.prototype.updateData = function () {
@@ -102,13 +106,13 @@ var App = (function () {
 App = __decorate([
     core_1.Component({
         selector: 'my-app',
-        providers: [data_service_ts_1.DataService, http_service_ts_1.HttpService],
+        providers: [data_service_ts_1.DataService],
         template: "\n    <ngx-charts-line-chart\n      [view]=\"view\"\n      [scheme]=\"colorScheme\"\n      [results]=\"multi\"\n      [gradient]=\"gradient\"\n      [xAxis]=\"showXAxis\"\n      [yAxis]=\"showYAxis\"\n      [legend]=\"showLegend\"\n      [timeline]=\"timeline\"\n      [showXAxisLabel]=\"showXAxisLabel\"\n      [showYAxisLabel]=\"showYAxisLabel\"\n      [xAxisLabel]=\"xAxisLabel\"\n      [yAxisLabel]=\"yAxisLabel\"\n      [autoScale]=\"autoScale\"\n      (select)=\"onSelect($event)\">\n    </ngx-charts-line-chart>\n  "
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof data_service_ts_1.DataService !== "undefined" && data_service_ts_1.DataService) === "function" && _a || Object, typeof (_b = typeof http_service_ts_1.HttpService !== "undefined" && http_service_ts_1.HttpService) === "function" && _b || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof data_service_ts_1.DataService !== "undefined" && data_service_ts_1.DataService) === "function" && _a || Object])
 ], App);
 exports.App = App;
-var _a, _b;
+var _a;
 /*
 @NgModule({
     imports: [ BrowserModule, BrowserAnimationsModule, NgxChartsModule, FormsModule ],

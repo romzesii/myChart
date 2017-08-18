@@ -2,6 +2,7 @@
  * Created by Roman on 10.08.2017.
  */
 import {Rooms} from '../data.ts';
+import { HttpService} from './http.service.ts';
 export class DataService{
 
     private rooms: Rooms[] = [
@@ -11,6 +12,8 @@ export class DataService{
         { name: "bathroom"},
         { name: "playroom"}
     ];
+    constructor(private httpService: HttpService){}
+
     getRooms(): Rooms[] {
 
         return this.rooms;
@@ -51,5 +54,10 @@ export class DataService{
 
         //console.log(results);
         return results;
+    }
+    getData(){
+
+
+
     }
 }
