@@ -14,7 +14,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require("@angular/core");
 var data_ts_1 = require("../data.ts");
-var data_service_ts_1 = require("./data.service.ts");
+var graphdata_service_ts_1 = require("./graphdata.service.ts");
 var log_service_ts_1 = require("./log.service.ts");
 /*
 
@@ -30,8 +30,8 @@ import {NgxChartsModule} from '@swimlane/ngx-charts';
 //import { AppModule } from '../app/app.module.ts';
 */
 var App = (function () {
-    function App(dataService, logService) {
-        this.dataService = dataService;
+    function App(graphDataService, logService) {
+        this.graphDataService = graphDataService;
         this.logService = logService;
         this.view = [700, 400];
         // options
@@ -70,7 +70,7 @@ var App = (function () {
                 error => {this.error = error; console.log(error);}
             );
         */
-        this.multi = this.dataService.getData(); //todo getData() method
+        this.multi = this.graphDataService.getData(); //todo getData() method
         console.log(this.multi);
         //console.log(this.httpService.getData().subscribe((data)=>this.test=data));
     };
@@ -79,27 +79,8 @@ var App = (function () {
         if (!this.realTimeData) {
             return;
         }
-        /*
-        let date = new Date();
-        date.setMonth(date.getMonth() + this.newTime);
-        this.newTime++;
-        for (const series of this.dateData) {
-            series.series.push({
-                name: date,
-                value: Math.floor(50 + Math.random() * 50)
-            });
-        }
-        */
-        //this.dateData = [...this.dateData];
-        //this.multi = generateData(4);
-        this.multi = this.dataService.generateData(5);
+        this.multi = this.graphDataService.generateData(5);
         console.log(this.multi);
-        //let newData = {};
-        //newData.name = new Date(2017, this.update, 1);
-        //newData.value = randTemp;
-        //this.multi[0]['series'].push(newData);
-        //this.update++;
-        //console.log(this.multi);
     };
     App.prototype.onSelect = function (event) {
         console.log(event);
@@ -109,10 +90,10 @@ var App = (function () {
 App = __decorate([
     core_1.Component({
         selector: 'my-app',
-        providers: [data_service_ts_1.DataService, log_service_ts_1.LogService],
+        providers: [graphdata_service_ts_1.GraphDataService, log_service_ts_1.LogService],
         template: "\n    <ngx-charts-line-chart\n      [view]=\"view\"\n      [scheme]=\"colorScheme\"\n      [results]=\"multi\"\n      [gradient]=\"gradient\"\n      [xAxis]=\"showXAxis\"\n      [yAxis]=\"showYAxis\"\n      [legend]=\"showLegend\"\n      [timeline]=\"timeline\"\n      [showXAxisLabel]=\"showXAxisLabel\"\n      [showYAxisLabel]=\"showYAxisLabel\"\n      [xAxisLabel]=\"xAxisLabel\"\n      [yAxisLabel]=\"yAxisLabel\"\n      [autoScale]=\"autoScale\"\n      (select)=\"onSelect($event)\">\n    </ngx-charts-line-chart>\n  "
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof data_service_ts_1.DataService !== "undefined" && data_service_ts_1.DataService) === "function" && _a || Object, typeof (_b = typeof log_service_ts_1.LogService !== "undefined" && log_service_ts_1.LogService) === "function" && _b || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof graphdata_service_ts_1.GraphDataService !== "undefined" && graphdata_service_ts_1.GraphDataService) === "function" && _a || Object, typeof (_b = typeof log_service_ts_1.LogService !== "undefined" && log_service_ts_1.LogService) === "function" && _b || Object])
 ], App);
 exports.App = App;
 var _a, _b;

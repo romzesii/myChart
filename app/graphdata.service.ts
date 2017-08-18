@@ -5,10 +5,12 @@ import {Injectable} from '@angular/core';
 import {Rooms} from '../data.ts';
 import {HttpService} from './http.service.ts';
 import {LogService} from './log.service.ts';
+import { Response} from '@angular/http';
+import {Test} from './test';
 
 @Injectable()
-export class DataService{
-
+export class GraphDataService{
+    test: Test;
     private rooms: Rooms[] = [
         { name:"livingroom"},
         { name: "kitchen"},
@@ -62,8 +64,7 @@ export class DataService{
     }
     getData(){
         this.logService.write("!-----Запрос данных в httpService");
-        this.httpService.requestData();
-
+        return this.httpService.requestData().subscribe((data: Response) => this.test=data.json());
 
     }
 }

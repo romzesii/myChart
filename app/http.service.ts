@@ -9,15 +9,19 @@ import { Test } from '../app/test.ts';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
+import {LogService} from './log.service.ts';
 //import { MyAppModule } from './app.module.ts'
 
 @Injectable()
 export class HttpService{
 
-    constructor(private http: Http){}
+    constructor(private http: Http, private logService: LogService){}
 
-    requestData() : Observable<Test[]> {
+    requestData() {
+        this.logService.write('!----- Отправка http запроса');
+        return this.http.get('test.json');
         //return this.http.get('https://www.yandex.ru/');
+        /*
         return this.http.get('../test.json')
             .map((resp:Response)=>{
 
@@ -30,7 +34,7 @@ export class HttpService{
                 }
                 return users;
             })
-            .catch((error: any)=> { return Observable.throw(error);});
+            .catch((error: any)=> { return Observable.throw(error);}); */
     }
 }
 

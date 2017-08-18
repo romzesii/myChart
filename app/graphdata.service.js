@@ -15,8 +15,8 @@ var core_1 = require("@angular/core");
 var data_ts_1 = require("../data.ts");
 var http_service_ts_1 = require("./http.service.ts");
 var log_service_ts_1 = require("./log.service.ts");
-var DataService = (function () {
-    function DataService(httpService, logService) {
+var GraphDataService = (function () {
+    function GraphDataService(httpService, logService) {
         this.httpService = httpService;
         this.logService = logService;
         this.rooms = [
@@ -27,16 +27,16 @@ var DataService = (function () {
             { name: "playroom" }
         ];
     }
-    DataService.prototype.getRooms = function () {
+    GraphDataService.prototype.getRooms = function () {
         return this.rooms;
     };
     //getRoomName(index: number = 1): Rooms[]{
     //return this.rooms[index - 1];
     //}
-    DataService.prototype.addRooms = function (name) {
+    GraphDataService.prototype.addRooms = function (name) {
         this.rooms.push(new data_ts_1.Rooms(name));
     };
-    DataService.prototype.generateData = function (seriesRooms, dataPoints) {
+    GraphDataService.prototype.generateData = function (seriesRooms, dataPoints) {
         if (seriesRooms === void 0) { seriesRooms = 1; }
         if (dataPoints === void 0) { dataPoints = 12; }
         this.logService.write("!-----Генерация данных");
@@ -63,16 +63,17 @@ var DataService = (function () {
         //console.log(results);
         return results;
     };
-    DataService.prototype.getData = function () {
+    GraphDataService.prototype.getData = function () {
+        var _this = this;
         this.logService.write("!-----Запрос данных в httpService");
-        this.httpService.requestData();
+        return this.httpService.requestData().subscribe(function (data) { return _this.test = data.json(); });
     };
-    return DataService;
+    return GraphDataService;
 }());
-DataService = __decorate([
+GraphDataService = __decorate([
     core_1.Injectable(),
     __metadata("design:paramtypes", [typeof (_a = typeof http_service_ts_1.HttpService !== "undefined" && http_service_ts_1.HttpService) === "function" && _a || Object, typeof (_b = typeof log_service_ts_1.LogService !== "undefined" && log_service_ts_1.LogService) === "function" && _b || Object])
-], DataService);
-exports.DataService = DataService;
+], GraphDataService);
+exports.GraphDataService = GraphDataService;
 var _a, _b;
-//# sourceMappingURL=data.service.js.map
+//# sourceMappingURL=graphdata.service.js.map

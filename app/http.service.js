@@ -13,34 +13,40 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/http");
-var Observable_1 = require("rxjs/Observable");
 require("rxjs/add/operator/map");
 require("rxjs/add/observable/throw");
+var log_service_ts_1 = require("./log.service.ts");
 //import { MyAppModule } from './app.module.ts'
 var HttpService = (function () {
-    function HttpService(http) {
+    function HttpService(http, logService) {
         this.http = http;
+        this.logService = logService;
     }
     HttpService.prototype.requestData = function () {
+        this.logService.write('!----- Отправка http запроса');
+        return this.http.get('test.json');
         //return this.http.get('https://www.yandex.ru/');
+        /*
         return this.http.get('../test.json')
-            .map(function (resp) {
-            var usersList = resp.json().data;
-            var users = [];
-            for (var index in usersList) {
-                console.log(usersList[index]);
-                var user = usersList[index];
-                users.push({ name: user.userName, age: user.userAge });
-            }
-            return users;
-        })
-            .catch(function (error) { return Observable_1.Observable.throw(error); });
+            .map((resp:Response)=>{
+
+                let usersList = resp.json().data;
+                let users :Test[] = [];
+                for(let index in usersList){
+                    console.log(usersList[index]);
+                    let user = usersList[index];
+                    users.push({name: user.userName, age: user.userAge});
+                }
+                return users;
+            })
+            .catch((error: any)=> { return Observable.throw(error);}); */
     };
     return HttpService;
 }());
 HttpService = __decorate([
     core_1.Injectable(),
-    __metadata("design:paramtypes", [http_1.Http])
+    __metadata("design:paramtypes", [http_1.Http, typeof (_a = typeof log_service_ts_1.LogService !== "undefined" && log_service_ts_1.LogService) === "function" && _a || Object])
 ], HttpService);
 exports.HttpService = HttpService;
+var _a;
 //# sourceMappingURL=http.service.js.map

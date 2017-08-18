@@ -6,7 +6,7 @@
 import {Component, OnInit} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {single, multi} from '../data.ts';
-import {DataService} from './data.service.ts';
+import {GraphDataService} from './graphdata.service.ts';
 import {LogService} from './log.service.ts';
 //import { HttpService} from './http.service.ts';
 import { Test } from '../app/test.ts';
@@ -25,7 +25,7 @@ import {NgxChartsModule} from '@swimlane/ngx-charts';
 */
 @Component({
     selector: 'my-app',
-    providers: [DataService, LogService],
+    providers: [GraphDataService, LogService],
     template: `
     <ngx-charts-line-chart
       [view]="view"
@@ -75,7 +75,7 @@ export class App implements OnInit {
     // line, area
     autoScale = true;
 
-    constructor(private dataService: DataService, private logService: LogService) {
+    constructor(private graphDataService: GraphDataService, private logService: LogService) {
         Object.assign(this, {single, multi});
         //this.rooms = rooms;
         //this.dataService.generateData(count);
@@ -94,7 +94,7 @@ export class App implements OnInit {
                 error => {this.error = error; console.log(error);}
             );
         */
-        this.multi = this.dataService.getData(); //todo getData() method
+        this.multi = this.graphDataService.getData(); //todo getData() method
         console.log(this.multi);
         //console.log(this.httpService.getData().subscribe((data)=>this.test=data));
 
@@ -105,29 +105,9 @@ export class App implements OnInit {
         if (!this.realTimeData) {
             return;
         }
-        /*
-        let date = new Date();
-        date.setMonth(date.getMonth() + this.newTime);
-        this.newTime++;
-        for (const series of this.dateData) {
-            series.series.push({
-                name: date,
-                value: Math.floor(50 + Math.random() * 50)
-            });
-        }
-        */
-        //this.dateData = [...this.dateData];
-        //this.multi = generateData(4);
-        this.multi = this.dataService.generateData(5);
+
+        this.multi = this.graphDataService.generateData(5);
         console.log(this.multi);
-
-        //let newData = {};
-        //newData.name = new Date(2017, this.update, 1);
-        //newData.value = randTemp;
-        //this.multi[0]['series'].push(newData);
-
-        //this.update++;
-        //console.log(this.multi);
     }
 
 

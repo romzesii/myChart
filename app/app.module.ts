@@ -3,7 +3,7 @@
  */
 
 import {NgModule} from '@angular/core';
-import {DataService} from './data.service.ts';
+import {GraphDataService} from './graphdata.service.ts';
 import { HttpModule }  from '@angular/http';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import {BrowserModule} from '@angular/platform-browser';
