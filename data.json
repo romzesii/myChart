@@ -1,0 +1,35 @@
+[
+  {
+    "name": "Livingroom1",
+    "series":[
+      {"name": 1503329179,
+      "value": 33},
+      {"name": 1501629179,
+        "value": 64},
+      {"name": 1500029179,
+        "value": 55}
+    ]
+  },
+  {
+    "name": "Kitchen2",
+    "series":[
+      {"name": 1503329179,
+        "value": 24},
+      {"name": 1501629179,
+        "value": 55},
+      {"name": 1500029179,
+        "value": 46}
+    ]
+  },
+  {
+    "name": "Bedroom3",
+    "series":[
+      {"name": 1503329179,
+        "value": 29},
+      {"name": 1501629179,
+        "value": 100},
+      {"name": 1500029179,
+        "value": 51}
+    ]
+  }
+]

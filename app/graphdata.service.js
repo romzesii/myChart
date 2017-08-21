@@ -12,13 +12,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Created by Roman on 10.08.2017.
  */
 var core_1 = require("@angular/core");
-var data_ts_1 = require("../data.ts");
-var http_service_ts_1 = require("./http.service.ts");
+var http_1 = require("@angular/http");
+var rooms_ts_1 = require("../rooms.ts");
+//import {HttpService} from './http.service.ts';
 var log_service_ts_1 = require("./log.service.ts");
+require("rxjs/add/operator/map");
+require("rxjs/add/observable/throw");
 var GraphDataService = (function () {
-    function GraphDataService(httpService, logService) {
-        this.httpService = httpService;
+    function GraphDataService(logService, http) {
         this.logService = logService;
+        this.http = http;
         this.rooms = [
             { name: "livingroom" },
             { name: "kitchen" },
@@ -26,6 +29,7 @@ var GraphDataService = (function () {
             { name: "bathroom" },
             { name: "playroom" }
         ];
+        this.requestUrl = 'data.json';
     }
     GraphDataService.prototype.getRooms = function () {
         return this.rooms;
@@ -34,12 +38,12 @@ var GraphDataService = (function () {
     //return this.rooms[index - 1];
     //}
     GraphDataService.prototype.addRooms = function (name) {
-        this.rooms.push(new data_ts_1.Rooms(name));
+        this.rooms.push(new rooms_ts_1.Rooms(name));
     };
     GraphDataService.prototype.generateData = function (seriesRooms, dataPoints) {
         if (seriesRooms === void 0) { seriesRooms = 1; }
         if (dataPoints === void 0) { dataPoints = 12; }
-        this.logService.write("!-----Генерация данных");
+        this.logService.write("Генерация данных");
         var results = [];
         var domain = [];
         for (var j = 0; j < dataPoints; j++) {
@@ -64,16 +68,16 @@ var GraphDataService = (function () {
         return results;
     };
     GraphDataService.prototype.getData = function () {
-        var _this = this;
-        this.logService.write("!-----Запрос данных в httpService");
-        return this.httpService.requestData().subscribe(function (data) { return _this.test = data.json(); });
+        this.logService.write('graphDataService...Отправка http запроса');
+        return this.http.get(this.requestUrl).map(function (res) { return res.json(); });
+        // return this.http.get(this.requestUrl).map((res:Response) => res.json()).catch((error:any) => Observable.throw(error.json().error || 'Server error'));
     };
     return GraphDataService;
 }());
 GraphDataService = __decorate([
     core_1.Injectable(),
-    __metadata("design:paramtypes", [typeof (_a = typeof http_service_ts_1.HttpService !== "undefined" && http_service_ts_1.HttpService) === "function" && _a || Object, typeof (_b = typeof log_service_ts_1.LogService !== "undefined" && log_service_ts_1.LogService) === "function" && _b || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof log_service_ts_1.LogService !== "undefined" && log_service_ts_1.LogService) === "function" && _a || Object, http_1.Http])
 ], GraphDataService);
 exports.GraphDataService = GraphDataService;
-var _a, _b;
+var _a;
 //# sourceMappingURL=graphdata.service.js.map

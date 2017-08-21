@@ -198,4 +198,4 @@ var Rooms = (function () {
     return Rooms;
 }());
 exports.Rooms = Rooms;
-//# sourceMappingURL=data.js.map
+//# sourceMappingURL=rooms.js.map

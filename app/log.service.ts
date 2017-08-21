@@ -6,6 +6,7 @@ export class LogService{
 
     write(logMessage:string){
 
+        console.log(`>>>`);
         console.log(logMessage);
     }
 }

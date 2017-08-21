@@ -6,6 +6,7 @@ var LogService = (function () {
     function LogService() {
     }
     LogService.prototype.write = function (logMessage) {
+        console.log(">>>");
         console.log(logMessage);
     };
     return LogService;

@@ -2,7 +2,7 @@
  * Created by Roman on 11.08.2017.
  */
 
-export class Test{
+export class Data{
     name: string;
-    age: number;
+    series: [];
 }

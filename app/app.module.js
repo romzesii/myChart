@@ -13,7 +13,7 @@ var http_1 = require("@angular/http");
 var platform_browser_dynamic_1 = require("@angular/platform-browser-dynamic");
 var platform_browser_1 = require("@angular/platform-browser");
 var forms_1 = require("@angular/forms");
-var platform_browser_animations_1 = require("@angular/platform-browser-animations");
+var animations_1 = require("@angular/platform-browser/animations");
 var ngx_charts_1 = require("@swimlane/ngx-charts");
 var app_ts_1 = require("./app.ts");
 var AppModule = (function () {
@@ -23,7 +23,7 @@ var AppModule = (function () {
 }());
 AppModule = __decorate([
     core_1.NgModule({
-        imports: [platform_browser_1.BrowserModule, platform_browser_animations_1.BrowserAnimationsModule, ngx_charts_1.NgxChartsModule, forms_1.FormsModule, http_1.HttpModule],
+        imports: [platform_browser_1.BrowserModule, animations_1.BrowserAnimationsModule, ngx_charts_1.NgxChartsModule, forms_1.FormsModule, http_1.HttpModule],
         declarations: [app_ts_1.App],
         bootstrap: [app_ts_1.App]
     })

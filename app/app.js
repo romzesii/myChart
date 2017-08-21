@@ -13,22 +13,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
-var data_ts_1 = require("../data.ts");
+var rooms_ts_1 = require("../rooms.ts");
 var graphdata_service_ts_1 = require("./graphdata.service.ts");
 var log_service_ts_1 = require("./log.service.ts");
 /*
 
-import { FormsModule } from '@angular/forms';
-//import { HttpModule }  from '@angular/http';
-import {BrowserAnimationsModule} from '@angular/platform-browser-animations';
-import {NgxChartsModule} from '@swimlane/ngx-charts';
+ import { FormsModule } from '@angular/forms';
+ //import { HttpModule }  from '@angular/http';
+ import {BrowserAnimationsModule} from '@angular/platform-browser-animations';
+ import {NgxChartsModule} from '@swimlane/ngx-charts';
 
 
-//import { HttpService} from '../app/http.service.ts';
-//import { Response} from '@angular/http';
+ //import { HttpService} from '../app/http.service.ts';
+ //import { Response} from '@angular/http';
 
-//import { AppModule } from '../app/app.module.ts';
-*/
+ //import { AppModule } from '../app/app.module.ts';
+ */
 var App = (function () {
     function App(graphDataService, logService) {
         this.graphDataService = graphDataService;
@@ -44,46 +44,61 @@ var App = (function () {
         this.showYAxisLabel = true;
         this.yAxisLabel = 'Temperature';
         this.update = 0;
-        this.realTimeData = true;
+        this.realTimeData = false;
         this.newTime = 0;
         this.timeline = true;
-        this.test = [];
         this.colorScheme = {
             domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
         };
         // line, area
         this.autoScale = true;
-        Object.assign(this, { single: data_ts_1.single, multi: data_ts_1.multi });
+        Object.assign(this, { single: rooms_ts_1.single, multi: rooms_ts_1.multi });
         //this.rooms = rooms;
         //this.dataService.generateData(count);
     }
     //todo update data
     App.prototype.ngOnInit = function () {
-        this.logService.write("!-----Инициализация компонента App");
+        this.logService.write("Инициализация компонента App");
         setInterval(this.updateData.bind(this), 4000);
-        //console.log(this.httpService.getData());
-        //this.httpService.getData().subscribe((data)=>this.test=data);
-        /*
-        this.httpService.getData()
-            .subscribe(
-                data=>this.test=data,
-                error => {this.error = error; console.log(error);}
-            );
-        */
-        this.multi = this.graphDataService.getData(); //todo getData() method
-        console.log(this.multi);
+        this.logService.write('requestData()');
+        this.requestData();
+        //this.apiResponseSubscription = this.graphDataService.getData().subscribe((response) => {
+        //console.debug(response);
+        //this.multi = response;
+        //console.log(this.multi);
+        //});
+        //this.httpService.getData().subscribe((data: Response) => this.test = data.json());
+        //this.httpService.getData()
+        //this.multi = this.graphDataService.getData(); //todo getData() method
         //console.log(this.httpService.getData().subscribe((data)=>this.test=data));
     };
+    App.prototype.ngOnDestroy = function () {
+        if (this.apiResponseSubscription) {
+            this.apiResponseSubscription.unsubscribe();
+        }
+    };
+    App.prototype.requestData = function () {
+        var _this = this;
+        this.apiResponseSubscription = this.graphDataService.getData().subscribe(function (response) {
+            //console.debug(response);
+            _this.multi = response;
+            _this.logService.write(_this.multi);
+        });
+    };
     App.prototype.updateData = function () {
-        console.log('--------updateData()');
+        //this.logService.write('updateData()');
+        console.log('------update data');
         if (!this.realTimeData) {
             return;
         }
         this.multi = this.graphDataService.generateData(5);
-        console.log(this.multi);
+        this.logService.write(this.multi);
+        //console.log(this.multi);
     };
     App.prototype.onSelect = function (event) {
         console.log(event);
+        this.requestData();
+        this.graphDataService.addRooms('lalala');
     };
     return App;
 }());
@@ -98,11 +113,11 @@ App = __decorate([
 exports.App = App;
 var _a, _b;
 /*
-@NgModule({
-    imports: [ BrowserModule, BrowserAnimationsModule, NgxChartsModule, FormsModule ],
-    declarations: [ App ],
-    bootstrap: [ App ]
-})
-export class AppModule {}
-*/
+ @NgModule({
+ imports: [ BrowserModule, BrowserAnimationsModule, NgxChartsModule, FormsModule ],
+ declarations: [ App ],
+ bootstrap: [ App ]
+ })
+ export class AppModule {}
+ */
 //# sourceMappingURL=app.js.map

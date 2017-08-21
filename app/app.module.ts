@@ -3,19 +3,20 @@
  */
 
 import {NgModule} from '@angular/core';
-import {GraphDataService} from './graphdata.service.ts';
-import { HttpModule }  from '@angular/http';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import {GraphDataService} from './graphdata.service';
+import {HttpModule}  from '@angular/http';
+import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {BrowserModule} from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
-import {BrowserAnimationsModule} from '@angular/platform-browser-animations';
+import {FormsModule} from '@angular/forms';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
-import { App  } from './app.ts';
+import {App} from './app.ts';
 
 @NgModule({
-    imports: [ BrowserModule, BrowserAnimationsModule, NgxChartsModule, FormsModule, HttpModule ],
-    declarations: [ App ],
-    bootstrap: [ App ]
+    imports: [BrowserModule, BrowserAnimationsModule, NgxChartsModule, FormsModule, HttpModule],
+    declarations: [App],
+    bootstrap: [App]
 })
-export class AppModule {}
+export class AppModule {
+}
 platformBrowserDynamic().bootstrapModule(AppModule);

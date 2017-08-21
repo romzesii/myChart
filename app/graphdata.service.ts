@@ -2,15 +2,18 @@
  * Created by Roman on 10.08.2017.
  */
 import {Injectable} from '@angular/core';
-import {Rooms} from '../data.ts';
-import {HttpService} from './http.service.ts';
+import {Http, Response} from '@angular/http';
+import {Rooms} from '../rooms.ts';
+//import {HttpService} from './http.service.ts';
 import {LogService} from './log.service.ts';
-import { Response} from '@angular/http';
-import {Test} from './test';
+import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/observable/throw';
+import {Data} from './data.ts';
 
 @Injectable()
 export class GraphDataService{
-    test: Test;
+    data: Data;
     private rooms: Rooms[] = [
         { name:"livingroom"},
         { name: "kitchen"},
@@ -18,7 +21,9 @@ export class GraphDataService{
         { name: "bathroom"},
         { name: "playroom"}
     ];
-    constructor(private httpService: HttpService, private logService: LogService){}
+    private requestUrl = 'data.json';
+
+    constructor(private logService: LogService, private http:Http){}
 
     getRooms(): Rooms[] {
 
@@ -33,7 +38,7 @@ export class GraphDataService{
     }
 
     generateData(seriesRooms: number = 1, dataPoints: number = 12){
-        this.logService.write("!-----Генерация данных");
+        this.logService.write("Генерация данных");
         const results = [];
         const domain: Date[] = [];
 
@@ -58,13 +63,12 @@ export class GraphDataService{
             }
             results.push(series);
         }
-
         //console.log(results);
         return results;
     }
-    getData(){
-        this.logService.write("!-----Запрос данных в httpService");
-        return this.httpService.requestData().subscribe((data: Response) => this.test=data.json());
-
+    getData():Observable {
+        this.logService.write('graphDataService...Отправка http запроса');
+        return this.http.get(this.requestUrl).map((res:Response) => res.json());
+        // return this.http.get(this.requestUrl).map((res:Response) => res.json()).catch((error:any) => Observable.throw(error.json().error || 'Server error'));
     }
 }
