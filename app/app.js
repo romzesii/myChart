@@ -46,7 +46,7 @@ var App = (function () {
         this.update = 0;
         this.realTimeData = false;
         this.newTime = 0;
-        this.timeline = true;
+        this.timeline = false;
         this.colorScheme = {
             domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
         };

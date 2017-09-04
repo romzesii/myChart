@@ -67,7 +67,7 @@ export class App implements OnDestroy {
     realTimeData:boolean = false;
     rooms:any[];
     newTime:number = 0;
-    timeline = true;
+    timeline = false;
     data:Observable<Data[]>;
     error:any;
 

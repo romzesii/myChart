@@ -2,7 +2,7 @@
  * Created by Roman on 10.08.2017.
  */
 import {Injectable} from '@angular/core';
-import {Http, Response} from '@angular/http';
+import {Http, Response, Headers} from '@angular/http';
 import {Rooms} from '../rooms.ts';
 //import {HttpService} from './http.service.ts';
 import {LogService} from './log.service.ts';
@@ -22,6 +22,7 @@ export class GraphDataService{
         { name: "playroom"}
     ];
     private requestUrl = 'data.json';
+    private requestBtcUrl = 'http://localhost:1880/btc';
 
     constructor(private logService: LogService, private http:Http){}
 
@@ -67,8 +68,13 @@ export class GraphDataService{
         return results;
     }
     getData():Observable {
+        const headers = new Headers();
+        //headers.append('Access-Control-Allow-Headers', 'Content-Type');
+        //headers.append('Access-Control-Allow-Methods', 'GET');
+        //headers.append('Access-Control-Allow-Origin', '*');
         this.logService.write('graphDataService...Отправка http запроса');
-        return this.http.get(this.requestUrl).map((res:Response) => res.json());
+        //return this.http.get(this.requestBtcUrl, {headers: headers}).map((res:Response) => res.json());
+        return this.http.get(this.requestBtcUrl).map((res:Response) => res.json());
         // return this.http.get(this.requestUrl).map((res:Response) => res.json()).catch((error:any) => Observable.throw(error.json().error || 'Server error'));
     }
 }
