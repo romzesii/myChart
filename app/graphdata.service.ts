@@ -33,12 +33,11 @@ export class GraphDataService{
     //getRoomName(index: number = 1): Rooms[]{
         //return this.rooms[index - 1];
     //}
-    addRooms(name: string){
-
-        this.rooms.push(new Rooms(name));
+    addRooms(name){
+        this.rooms = [...this.rooms, name];
     }
 
-    generateData(seriesRooms: number = 1, dataPoints: number = 12){
+    generateData(seriesRooms: number = this.rooms.length, dataPoints: number = 12){
         this.logService.write("Генерация данных");
         const results = [];
         const domain: Date[] = [];

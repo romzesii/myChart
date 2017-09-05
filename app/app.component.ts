@@ -28,8 +28,16 @@ import {Subscription} from 'rxjs';
  */
 @Component({
     selector: 'my-app',
+    styleUrls:['../app/app.component.css'],
     providers: [GraphDataService, LogService],
     template: `
+    <div class="app">{{title}}{{realTimeData ? ' in update mode' : ' in request mode'}}</div>
+    <button (click)="turnOnUpdateMode()">Update/Generate</button>
+    <button (click)="turnOnRequestMode()">HTTP Request</button>
+    <div>
+        <input type="text" #topic>
+        <button (click)="requestByTopic(topic.value)">Запрос по топику</button>
+    </div>
     <ngx-charts-line-chart
       [view]="view"
       [scheme]="colorScheme"
@@ -48,7 +56,9 @@ import {Subscription} from 'rxjs';
     </ngx-charts-line-chart>
   `
 })
-export class App implements OnDestroy {
+export class AppComponent implements OnDestroy {
+
+    title: string;
     single:any[];
     multi:any[];
     dateData:any[];
@@ -74,12 +84,23 @@ export class App implements OnDestroy {
     colorScheme = {
         domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
     };
+    turnOnUpdateMode(){
+        this.realTimeData = true;
+
+    }
+    turnOnRequestMode(){
+        this.realTimeData = false;
+    }
+    requestByTopic(value){
+        console.log(`Запрос по топику ${value}`);
+    }
 
     // line, area
     autoScale = true;
     private apiResponseSubscription:Subscription;
 
     constructor(private graphDataService:GraphDataService, private logService:LogService) {
+        this.title  = 'Line Chart by Roman';
         Object.assign(this, {single, multi});
         //this.rooms = rooms;
         //this.dataService.generateData(count);
@@ -126,7 +147,7 @@ export class App implements OnDestroy {
             return;
         }
 
-        this.multi = this.graphDataService.generateData(5);
+        this.multi = this.graphDataService.generateData();
         this.logService.write(this.multi);
         //console.log(this.multi);
     }
@@ -135,7 +156,7 @@ export class App implements OnDestroy {
     onSelect(event) {
         console.log(event);
         this.requestData();
-        this.graphDataService.addRooms('lalala');
+        //this.graphDataService.addRooms('lalala'); //
 
     }
 

@@ -15,7 +15,7 @@ var platform_browser_1 = require("@angular/platform-browser");
 var forms_1 = require("@angular/forms");
 var animations_1 = require("@angular/platform-browser/animations");
 var ngx_charts_1 = require("@swimlane/ngx-charts");
-var app_ts_1 = require("./app.ts");
+var app_component_ts_1 = require("./app.component.ts");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -24,8 +24,8 @@ var AppModule = (function () {
 AppModule = __decorate([
     core_1.NgModule({
         imports: [platform_browser_1.BrowserModule, animations_1.BrowserAnimationsModule, ngx_charts_1.NgxChartsModule, forms_1.FormsModule, http_1.HttpModule],
-        declarations: [app_ts_1.App],
-        bootstrap: [app_ts_1.App]
+        declarations: [app_component_ts_1.AppComponent],
+        bootstrap: [app_component_ts_1.AppComponent]
     })
 ], AppModule);
 exports.AppModule = AppModule;

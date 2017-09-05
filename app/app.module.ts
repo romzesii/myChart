@@ -10,12 +10,12 @@ import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
-import {App} from './app.ts';
+import {AppComponent} from './app.component.ts';
 
 @NgModule({
     imports: [BrowserModule, BrowserAnimationsModule, NgxChartsModule, FormsModule, HttpModule],
-    declarations: [App],
-    bootstrap: [App]
+    declarations: [AppComponent],
+    bootstrap: [AppComponent]
 })
 export class AppModule {
 }

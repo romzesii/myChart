@@ -13,7 +13,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  */
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/http");
-var rooms_ts_1 = require("../rooms.ts");
 //import {HttpService} from './http.service.ts';
 var log_service_ts_1 = require("./log.service.ts");
 require("rxjs/add/operator/map");
@@ -39,10 +38,10 @@ var GraphDataService = (function () {
     //return this.rooms[index - 1];
     //}
     GraphDataService.prototype.addRooms = function (name) {
-        this.rooms.push(new rooms_ts_1.Rooms(name));
+        this.rooms = this.rooms.concat([name]);
     };
     GraphDataService.prototype.generateData = function (seriesRooms, dataPoints) {
-        if (seriesRooms === void 0) { seriesRooms = 1; }
+        if (seriesRooms === void 0) { seriesRooms = this.rooms.length; }
         if (dataPoints === void 0) { dataPoints = 12; }
         this.logService.write("Генерация данных");
         var results = [];

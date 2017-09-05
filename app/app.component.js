@@ -29,8 +29,8 @@ var log_service_ts_1 = require("./log.service.ts");
 
  //import { AppModule } from '../app/app.module.ts';
  */
-var App = (function () {
-    function App(graphDataService, logService) {
+var AppComponent = (function () {
+    function AppComponent(graphDataService, logService) {
         this.graphDataService = graphDataService;
         this.logService = logService;
         this.view = [700, 400];
@@ -52,12 +52,22 @@ var App = (function () {
         };
         // line, area
         this.autoScale = true;
+        this.title = 'Line Chart by Roman';
         Object.assign(this, { single: rooms_ts_1.single, multi: rooms_ts_1.multi });
         //this.rooms = rooms;
         //this.dataService.generateData(count);
     }
+    AppComponent.prototype.turnOnUpdateMode = function () {
+        this.realTimeData = true;
+    };
+    AppComponent.prototype.turnOnRequestMode = function () {
+        this.realTimeData = false;
+    };
+    AppComponent.prototype.requestByTopic = function (value) {
+        console.log("\u0417\u0430\u043F\u0440\u043E\u0441 \u043F\u043E \u0442\u043E\u043F\u0438\u043A\u0443 " + value);
+    };
     //todo update data
-    App.prototype.ngOnInit = function () {
+    AppComponent.prototype.ngOnInit = function () {
         this.logService.write("Инициализация компонента App");
         setInterval(this.updateData.bind(this), 4000);
         this.logService.write('requestData()');
@@ -72,12 +82,12 @@ var App = (function () {
         //this.multi = this.graphDataService.getData(); //todo getData() method
         //console.log(this.httpService.getData().subscribe((data)=>this.test=data));
     };
-    App.prototype.ngOnDestroy = function () {
+    AppComponent.prototype.ngOnDestroy = function () {
         if (this.apiResponseSubscription) {
             this.apiResponseSubscription.unsubscribe();
         }
     };
-    App.prototype.requestData = function () {
+    AppComponent.prototype.requestData = function () {
         var _this = this;
         this.apiResponseSubscription = this.graphDataService.getData().subscribe(function (response) {
             //console.debug(response);
@@ -85,32 +95,33 @@ var App = (function () {
             _this.logService.write(_this.multi);
         });
     };
-    App.prototype.updateData = function () {
+    AppComponent.prototype.updateData = function () {
         //this.logService.write('updateData()');
         console.log('------update data');
         if (!this.realTimeData) {
             return;
         }
-        this.multi = this.graphDataService.generateData(5);
+        this.multi = this.graphDataService.generateData();
         this.logService.write(this.multi);
         //console.log(this.multi);
     };
-    App.prototype.onSelect = function (event) {
+    AppComponent.prototype.onSelect = function (event) {
         console.log(event);
         this.requestData();
-        this.graphDataService.addRooms('lalala');
+        //this.graphDataService.addRooms('lalala'); //
     };
-    return App;
+    return AppComponent;
 }());
-App = __decorate([
+AppComponent = __decorate([
     core_1.Component({
         selector: 'my-app',
+        styleUrls: ['../app/app.component.css'],
         providers: [graphdata_service_ts_1.GraphDataService, log_service_ts_1.LogService],
-        template: "\n    <ngx-charts-line-chart\n      [view]=\"view\"\n      [scheme]=\"colorScheme\"\n      [results]=\"multi\"\n      [gradient]=\"gradient\"\n      [xAxis]=\"showXAxis\"\n      [yAxis]=\"showYAxis\"\n      [legend]=\"showLegend\"\n      [timeline]=\"timeline\"\n      [showXAxisLabel]=\"showXAxisLabel\"\n      [showYAxisLabel]=\"showYAxisLabel\"\n      [xAxisLabel]=\"xAxisLabel\"\n      [yAxisLabel]=\"yAxisLabel\"\n      [autoScale]=\"autoScale\"\n      (select)=\"onSelect($event)\">\n    </ngx-charts-line-chart>\n  "
+        template: "\n    <div class=\"app\">{{title}}{{realTimeData ? ' in update mode' : ' in request mode'}}</div>\n    <button (click)=\"turnOnUpdateMode()\">Update/Generate</button>\n    <button (click)=\"turnOnRequestMode()\">HTTP Request</button>\n    <div>\n        <input type=\"text\" #topic>\n        <button (click)=\"requestByTopic(topic.value)\">\u0417\u0430\u043F\u0440\u043E\u0441 \u043F\u043E \u0442\u043E\u043F\u0438\u043A\u0443</button>\n    </div>\n    <ngx-charts-line-chart\n      [view]=\"view\"\n      [scheme]=\"colorScheme\"\n      [results]=\"multi\"\n      [gradient]=\"gradient\"\n      [xAxis]=\"showXAxis\"\n      [yAxis]=\"showYAxis\"\n      [legend]=\"showLegend\"\n      [timeline]=\"timeline\"\n      [showXAxisLabel]=\"showXAxisLabel\"\n      [showYAxisLabel]=\"showYAxisLabel\"\n      [xAxisLabel]=\"xAxisLabel\"\n      [yAxisLabel]=\"yAxisLabel\"\n      [autoScale]=\"autoScale\"\n      (select)=\"onSelect($event)\">\n    </ngx-charts-line-chart>\n  "
     }),
     __metadata("design:paramtypes", [typeof (_a = typeof graphdata_service_ts_1.GraphDataService !== "undefined" && graphdata_service_ts_1.GraphDataService) === "function" && _a || Object, typeof (_b = typeof log_service_ts_1.LogService !== "undefined" && log_service_ts_1.LogService) === "function" && _b || Object])
-], App);
-exports.App = App;
+], AppComponent);
+exports.AppComponent = AppComponent;
 var _a, _b;
 /*
  @NgModule({
@@ -120,4 +131,4 @@ var _a, _b;
  })
  export class AppModule {}
  */
-//# sourceMappingURL=app.js.map
+//# sourceMappingURL=app.component.js.map
