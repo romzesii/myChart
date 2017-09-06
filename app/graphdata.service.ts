@@ -22,7 +22,8 @@ export class GraphDataService{
         { name: "playroom"}
     ];
     private requestUrl = 'data.json';
-    private requestBtcUrl = 'http://localhost:1880/btc';
+    private requestBtcUrl = 'http://localhost:1880/btc/v1/';
+    private requestDevUrl = 'http://localhost:5000/btc/v1/';
 
     constructor(private logService: LogService, private http:Http){}
 
@@ -66,14 +67,15 @@ export class GraphDataService{
         //console.log(results);
         return results;
     }
-    getData():Observable {
+    getData(req):Observable {
         const headers = new Headers();
         //headers.append('Access-Control-Allow-Headers', 'Content-Type');
         //headers.append('Access-Control-Allow-Methods', 'GET');
         //headers.append('Access-Control-Allow-Origin', '*');
         this.logService.write('graphDataService...Отправка http запроса');
         //return this.http.get(this.requestBtcUrl, {headers: headers}).map((res:Response) => res.json());
-        return this.http.get(this.requestBtcUrl).map((res:Response) => res.json());
+        return this.http.get(this.requestBtcUrl.concat(req)).map((res:Response) => res.json());
+        //return this.http.post(this.requestBtcUrl, req).map((res:Response) => res.json());
         // return this.http.get(this.requestUrl).map((res:Response) => res.json()).catch((error:any) => Observable.throw(error.json().error || 'Server error'));
     }
 }

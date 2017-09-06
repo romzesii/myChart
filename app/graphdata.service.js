@@ -29,7 +29,8 @@ var GraphDataService = (function () {
             { name: "playroom" }
         ];
         this.requestUrl = 'data.json';
-        this.requestBtcUrl = 'http://localhost:1880/btc';
+        this.requestBtcUrl = 'http://localhost:1880/btc/v1/';
+        this.requestDevUrl = 'http://localhost:5000/btc/v1/';
     }
     GraphDataService.prototype.getRooms = function () {
         return this.rooms;
@@ -67,14 +68,15 @@ var GraphDataService = (function () {
         //console.log(results);
         return results;
     };
-    GraphDataService.prototype.getData = function () {
+    GraphDataService.prototype.getData = function (req) {
         var headers = new http_1.Headers();
         //headers.append('Access-Control-Allow-Headers', 'Content-Type');
         //headers.append('Access-Control-Allow-Methods', 'GET');
         //headers.append('Access-Control-Allow-Origin', '*');
         this.logService.write('graphDataService...Отправка http запроса');
         //return this.http.get(this.requestBtcUrl, {headers: headers}).map((res:Response) => res.json());
-        return this.http.get(this.requestBtcUrl).map(function (res) { return res.json(); });
+        return this.http.get(this.requestBtcUrl.concat(req)).map(function (res) { return res.json(); });
+        //return this.http.post(this.requestBtcUrl, req).map((res:Response) => res.json());
         // return this.http.get(this.requestUrl).map((res:Response) => res.json()).catch((error:any) => Observable.throw(error.json().error || 'Server error'));
     };
     return GraphDataService;

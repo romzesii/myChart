@@ -34,9 +34,14 @@ import {Subscription} from 'rxjs';
     <div class="app">{{title}}{{realTimeData ? ' in update mode' : ' in request mode'}}</div>
     <button (click)="turnOnUpdateMode()">Update/Generate</button>
     <button (click)="turnOnRequestMode()">HTTP Request</button>
+    <div>{{topic}}</div>
     <div>
-        <input type="text" #topic>
-        <button (click)="requestByTopic(topic.value)">Запрос по топику</button>
+        <input type="text"
+            placeholder="i.e. kitchen floor temperature"
+            #inputTopic
+            [ngModel] = "topic"
+            (ngModelChange)="handleChangeTopic($event)">
+        <button (click)="requestByTopic(inputTopic.value)">Запрос по топику</button>
     </div>
     <ngx-charts-line-chart
       [view]="view"
@@ -59,6 +64,7 @@ import {Subscription} from 'rxjs';
 export class AppComponent implements OnDestroy {
 
     title: string;
+    topic: string;
     single:any[];
     multi:any[];
     dateData:any[];
@@ -93,6 +99,13 @@ export class AppComponent implements OnDestroy {
     }
     requestByTopic(value){
         console.log(`Запрос по топику ${value}`);
+        this.requestData(value);
+    }
+    handleChangeTopic(value: string){
+        this.topic = value;
+    }
+    handleInput(event: any){
+        //this.topic = event.target.value;
     }
 
     // line, area
@@ -110,8 +123,9 @@ export class AppComponent implements OnDestroy {
     ngOnInit() {
         this.logService.write("Инициализация компонента App");
         setInterval(this.updateData.bind(this), 4000);
-        this.logService.write('requestData()');
-        this.requestData();
+        //this.logService.write('requestData()');
+        //this.requestData(); //
+
         //this.apiResponseSubscription = this.graphDataService.getData().subscribe((response) => {
             //console.debug(response);
             //this.multi = response;
@@ -132,8 +146,8 @@ export class AppComponent implements OnDestroy {
             this.apiResponseSubscription.unsubscribe();
         }
     }
-    requestData(){
-        this.apiResponseSubscription = this.graphDataService.getData().subscribe((response) => {
+    requestData(req){
+        this.apiResponseSubscription = this.graphDataService.getData(req).subscribe((response) => {
             //console.debug(response);
             this.multi = response;
             this.logService.write(this.multi);
@@ -155,7 +169,7 @@ export class AppComponent implements OnDestroy {
 
     onSelect(event) {
         console.log(event);
-        this.requestData();
+        //this.requestData();
         //this.graphDataService.addRooms('lalala'); //
 
     }

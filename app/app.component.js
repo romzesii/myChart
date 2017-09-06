@@ -65,13 +65,20 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.requestByTopic = function (value) {
         console.log("\u0417\u0430\u043F\u0440\u043E\u0441 \u043F\u043E \u0442\u043E\u043F\u0438\u043A\u0443 " + value);
+        this.requestData(value);
+    };
+    AppComponent.prototype.handleChangeTopic = function (value) {
+        this.topic = value;
+    };
+    AppComponent.prototype.handleInput = function (event) {
+        //this.topic = event.target.value;
     };
     //todo update data
     AppComponent.prototype.ngOnInit = function () {
         this.logService.write("Инициализация компонента App");
         setInterval(this.updateData.bind(this), 4000);
-        this.logService.write('requestData()');
-        this.requestData();
+        //this.logService.write('requestData()');
+        //this.requestData(); //
         //this.apiResponseSubscription = this.graphDataService.getData().subscribe((response) => {
         //console.debug(response);
         //this.multi = response;
@@ -87,9 +94,9 @@ var AppComponent = (function () {
             this.apiResponseSubscription.unsubscribe();
         }
     };
-    AppComponent.prototype.requestData = function () {
+    AppComponent.prototype.requestData = function (req) {
         var _this = this;
-        this.apiResponseSubscription = this.graphDataService.getData().subscribe(function (response) {
+        this.apiResponseSubscription = this.graphDataService.getData(req).subscribe(function (response) {
             //console.debug(response);
             _this.multi = response;
             _this.logService.write(_this.multi);
@@ -107,7 +114,7 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.onSelect = function (event) {
         console.log(event);
-        this.requestData();
+        //this.requestData();
         //this.graphDataService.addRooms('lalala'); //
     };
     return AppComponent;
@@ -117,7 +124,7 @@ AppComponent = __decorate([
         selector: 'my-app',
         styleUrls: ['../app/app.component.css'],
         providers: [graphdata_service_ts_1.GraphDataService, log_service_ts_1.LogService],
-        template: "\n    <div class=\"app\">{{title}}{{realTimeData ? ' in update mode' : ' in request mode'}}</div>\n    <button (click)=\"turnOnUpdateMode()\">Update/Generate</button>\n    <button (click)=\"turnOnRequestMode()\">HTTP Request</button>\n    <div>\n        <input type=\"text\" #topic>\n        <button (click)=\"requestByTopic(topic.value)\">\u0417\u0430\u043F\u0440\u043E\u0441 \u043F\u043E \u0442\u043E\u043F\u0438\u043A\u0443</button>\n    </div>\n    <ngx-charts-line-chart\n      [view]=\"view\"\n      [scheme]=\"colorScheme\"\n      [results]=\"multi\"\n      [gradient]=\"gradient\"\n      [xAxis]=\"showXAxis\"\n      [yAxis]=\"showYAxis\"\n      [legend]=\"showLegend\"\n      [timeline]=\"timeline\"\n      [showXAxisLabel]=\"showXAxisLabel\"\n      [showYAxisLabel]=\"showYAxisLabel\"\n      [xAxisLabel]=\"xAxisLabel\"\n      [yAxisLabel]=\"yAxisLabel\"\n      [autoScale]=\"autoScale\"\n      (select)=\"onSelect($event)\">\n    </ngx-charts-line-chart>\n  "
+        template: "\n    <div class=\"app\">{{title}}{{realTimeData ? ' in update mode' : ' in request mode'}}</div>\n    <button (click)=\"turnOnUpdateMode()\">Update/Generate</button>\n    <button (click)=\"turnOnRequestMode()\">HTTP Request</button>\n    <div>{{topic}}</div>\n    <div>\n        <input type=\"text\"\n            placeholder=\"i.e. kitchen floor temperature\"\n            #inputTopic\n            [ngModel] = \"topic\"\n            (ngModelChange)=\"handleChangeTopic($event)\">\n        <button (click)=\"requestByTopic(inputTopic.value)\">\u0417\u0430\u043F\u0440\u043E\u0441 \u043F\u043E \u0442\u043E\u043F\u0438\u043A\u0443</button>\n    </div>\n    <ngx-charts-line-chart\n      [view]=\"view\"\n      [scheme]=\"colorScheme\"\n      [results]=\"multi\"\n      [gradient]=\"gradient\"\n      [xAxis]=\"showXAxis\"\n      [yAxis]=\"showYAxis\"\n      [legend]=\"showLegend\"\n      [timeline]=\"timeline\"\n      [showXAxisLabel]=\"showXAxisLabel\"\n      [showYAxisLabel]=\"showYAxisLabel\"\n      [xAxisLabel]=\"xAxisLabel\"\n      [yAxisLabel]=\"yAxisLabel\"\n      [autoScale]=\"autoScale\"\n      (select)=\"onSelect($event)\">\n    </ngx-charts-line-chart>\n  "
     }),
     __metadata("design:paramtypes", [typeof (_a = typeof graphdata_service_ts_1.GraphDataService !== "undefined" && graphdata_service_ts_1.GraphDataService) === "function" && _a || Object, typeof (_b = typeof log_service_ts_1.LogService !== "undefined" && log_service_ts_1.LogService) === "function" && _b || Object])
 ], AppComponent);
