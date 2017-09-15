@@ -26,6 +26,9 @@ import {Subscription} from 'rxjs';
 
  //import { AppModule } from '../app/app.module.ts';
  */
+interface Topic {
+    topicName: string;
+}
 @Component({
     selector: 'my-app',
     styleUrls:['../app/app.component.css'],
@@ -59,12 +62,29 @@ import {Subscription} from 'rxjs';
       [autoScale]="autoScale"
       (select)="onSelect($event)">
     </ngx-charts-line-chart>
+    <div>
+        <h5>Все топики в базе</h5>
+        <ul>
+            <ol *ngFor="let item of topicNames; let i = index;">
+                {{i + 1}}: {{item.topicName}}
+                    <input type="checkbox" (change)="onChange(item.topicName, $event.target.checked)">
+            </ol>
+        </ul>
+    </div>
   `
 })
 export class AppComponent implements OnDestroy {
 
     title: string;
     topic: string;
+    topicNames: Topic[] = [
+        {topicName: '/kitchen/floor/temperature'},
+        {topicName: '/kitchen/air/temperature'},
+        {topicName: '/kitchen/air/temperature'}
+    ];
+
+    fromDate: number;
+    toDate: number;
     single:any[];
     multi:any[];
     dateData:any[];
@@ -102,10 +122,29 @@ export class AppComponent implements OnDestroy {
         this.requestData(value);
     }
     handleChangeTopic(value: string){
+        //this.topic = value.replace(/\s/g, '/');
         this.topic = value;
     }
     handleInput(event: any){
         //this.topic = event.target.value;
+    }
+    onChange(name:string, isChecked: boolean) {
+        if (isChecked){
+            this.logService.write('Add graphic ' + name);
+            this.requestByTopic(name);
+        }
+        if (!isChecked) {
+            this.logService.write('Remove graphic ' + name);
+            let newMulti = this.multi.filter(function(item){
+                return item.name != name;
+            });
+            this.multi = newMulti;
+        }
+    }
+    buildGraphic(data:any[]){
+        let newMulti = this.multi.concat(data[0]);
+        this.multi = newMulti;
+        console.log('построение графика' + this.multi);
     }
 
     // line, area
@@ -114,6 +153,7 @@ export class AppComponent implements OnDestroy {
 
     constructor(private graphDataService:GraphDataService, private logService:LogService) {
         this.title  = 'Line Chart by Roman';
+        this.topic = '/kitchen/air/temperature';
         Object.assign(this, {single, multi});
         //this.rooms = rooms;
         //this.dataService.generateData(count);
@@ -146,11 +186,13 @@ export class AppComponent implements OnDestroy {
             this.apiResponseSubscription.unsubscribe();
         }
     }
+
     requestData(req){
         this.apiResponseSubscription = this.graphDataService.getData(req).subscribe((response) => {
-            //console.debug(response);
-            this.multi = response;
-            this.logService.write(this.multi);
+            console.debug(response);
+            //this.multi = response;
+            this.buildGraphic(response);
+            console.log(response);
         });
     }
 
@@ -162,13 +204,14 @@ export class AppComponent implements OnDestroy {
         }
 
         this.multi = this.graphDataService.generateData();
-        this.logService.write(this.multi);
+        this.logService.write(`Генерация графика ${this.multi}`);
         //console.log(this.multi);
     }
 
 
     onSelect(event) {
-        console.log(event);
+
+        this.logService.write(event);
         //this.requestData();
         //this.graphDataService.addRooms('lalala'); //
 
