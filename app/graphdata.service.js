@@ -80,9 +80,9 @@ var GraphDataService = (function () {
         //return this.http.post(this.requestBtcUrl, req).map((res:Response) => res.json());
         // return this.http.get(this.requestUrl).map((res:Response) => res.json()).catch((error:any) => Observable.throw(error.json().error || 'Server error'));
     };
-    GraphDataService.prototype.getTopics = function (req) {
+    GraphDataService.prototype.getTopics = function () {
         this.logService.write('graphDataService...запрос всех топиков');
-        return this.http.get(this.requestBtcUrl.concat('?getAll')).map(function (res) { return res.json(); });
+        return this.http.get(this.requestBtcUrl.concat('?get=topics')).map(function (res) { return res.json(); });
     };
     return GraphDataService;
 }());

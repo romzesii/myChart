@@ -79,9 +79,9 @@ export class GraphDataService{
         //return this.http.post(this.requestBtcUrl, req).map((res:Response) => res.json());
         // return this.http.get(this.requestUrl).map((res:Response) => res.json()).catch((error:any) => Observable.throw(error.json().error || 'Server error'));
     }
-    getTopics(req): Observable {
+    getTopics(): Observable {
         this.logService.write('graphDataService...запрос всех топиков');
-        return this.http.get(this.requestBtcUrl.concat('?getAll')).map((res:Response) => res.json());
+        return this.http.get(this.requestBtcUrl.concat('?get=topics')).map((res:Response) => res.json());
 
     }
 }

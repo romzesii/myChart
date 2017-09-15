@@ -37,6 +37,7 @@ interface Topic {
     <div class="app">{{title}}{{realTimeData ? ' in update mode' : ' in request mode'}}</div>
     <button (click)="turnOnUpdateMode()">Update/Generate</button>
     <button (click)="turnOnRequestMode()">HTTP Request</button>
+    <button (click)="requestTopics()">Запросить топики</button>
     <div>{{topic}}</div>
     <div>
         <input type="text"
@@ -78,9 +79,8 @@ export class AppComponent implements OnDestroy {
     title: string;
     topic: string;
     topicNames: Topic[] = [
-        {topicName: '/kitchen/floor/temperature'},
-        {topicName: '/kitchen/air/temperature'},
-        {topicName: '/kitchen/air/temperature'}
+        {topicName: '111'},
+        {topicName: '222'}
     ];
 
     fromDate: number;
@@ -193,6 +193,16 @@ export class AppComponent implements OnDestroy {
             //this.multi = response;
             this.buildGraphic(response);
             console.log(response);
+        });
+    }
+
+    requestTopics(){
+        this.apiResponseSubscription = this.graphDataService.getTopics().subscribe((response) => {
+
+            console.log('The quantity of unique topics ' + response.length);
+            for (let i = 0; i < response.length; i++){
+                this.topicNames[i].topicName = response[i];
+            }
         });
     }
 
