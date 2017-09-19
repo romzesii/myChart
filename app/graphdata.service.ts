@@ -74,8 +74,8 @@ export class GraphDataService{
         //headers.append('Access-Control-Allow-Origin', '*');
         this.logService.write('graphDataService...Отправка http запроса');
         //return this.http.get(this.requestBtcUrl, {headers: headers}).map((res:Response) => res.json());
+        //return this.http.get(this.requestBtcUrl.concat('?topic=' + req)).map((res:Response) => res.json());
         return this.http.get(this.requestBtcUrl.concat('?topic=' + req)).map((res:Response) => res.json());
-        //return this.http.get(this.requestBtcUrl.concat('?topic=' + req +'&from=1494979200')).map((res:Response) => res.json());
         //return this.http.post(this.requestBtcUrl, req).map((res:Response) => res.json());
         // return this.http.get(this.requestUrl).map((res:Response) => res.json()).catch((error:any) => Observable.throw(error.json().error || 'Server error'));
     }

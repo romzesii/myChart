@@ -46,7 +46,9 @@ System.config({
         'd3-collection': 'https://npmcdn.com/d3-collection',
         'd3-time-format': 'https://npmcdn.com/d3-time-format',
         'd3-hierarchy': 'https://npmcdn.com/d3-hierarchy',
-        '@swimlane/ngx-charts': 'https://npmcdn.com/@swimlane/ngx-charts'
+        '@swimlane/ngx-charts': 'https://npmcdn.com/@swimlane/ngx-charts',
+        'ngx-mydatepicker': 'node_modules/ngx-mydatepicker/bundles/ngx-mydatepicker.umd.min.js'
+
     },
     //packages defines our app package
     packages: {

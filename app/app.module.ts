@@ -10,11 +10,13 @@ import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
+import { NgxMyDatePickerModule } from 'ngx-mydatepicker'; //
 import {AppComponent} from './app.component.ts';
+import {DatePickerComponent} from './datepicker.component.ts';
 
 @NgModule({
-    imports: [BrowserModule, BrowserAnimationsModule, NgxChartsModule, FormsModule, HttpModule],
-    declarations: [AppComponent],
+    imports: [BrowserModule, BrowserAnimationsModule, NgxChartsModule, FormsModule, HttpModule, NgxMyDatePickerModule.forRoot()],
+    declarations: [AppComponent, DatePickerComponent],
     bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -15,7 +15,9 @@ var platform_browser_1 = require("@angular/platform-browser");
 var forms_1 = require("@angular/forms");
 var animations_1 = require("@angular/platform-browser/animations");
 var ngx_charts_1 = require("@swimlane/ngx-charts");
+var ngx_mydatepicker_1 = require("ngx-mydatepicker"); //
 var app_component_ts_1 = require("./app.component.ts");
+var datepicker_component_ts_1 = require("./datepicker.component.ts");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -23,8 +25,8 @@ var AppModule = (function () {
 }());
 AppModule = __decorate([
     core_1.NgModule({
-        imports: [platform_browser_1.BrowserModule, animations_1.BrowserAnimationsModule, ngx_charts_1.NgxChartsModule, forms_1.FormsModule, http_1.HttpModule],
-        declarations: [app_component_ts_1.AppComponent],
+        imports: [platform_browser_1.BrowserModule, animations_1.BrowserAnimationsModule, ngx_charts_1.NgxChartsModule, forms_1.FormsModule, http_1.HttpModule, ngx_mydatepicker_1.NgxMyDatePickerModule.forRoot()],
+        declarations: [app_component_ts_1.AppComponent, datepicker_component_ts_1.DatePickerComponent],
         bootstrap: [app_component_ts_1.AppComponent]
     })
 ], AppModule);

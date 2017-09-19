@@ -13,6 +13,7 @@ import {Observable} from 'rxjs/Observable';
 import {Response} from '@angular/http';
 import {Data} from './data.ts';
 import {Subscription} from 'rxjs';
+//import { DatePickerOptions, DateModel } from 'ng2-datepicker';
 /*
 
  import { FormsModule } from '@angular/forms';
@@ -26,9 +27,9 @@ import {Subscription} from 'rxjs';
 
  //import { AppModule } from '../app/app.module.ts';
  */
-interface Topic {
-    topicName: string;
-}
+//interface Topic {
+    //topicName: string;
+//}
 @Component({
     selector: 'my-app',
     styleUrls:['../app/app.component.css'],
@@ -41,7 +42,7 @@ interface Topic {
     <div>{{topic}}</div>
     <div>
         <input type="text"
-            placeholder="i.e. kitchen floor temperature"
+            placeholder="/kitchen/air/temperature"
             #inputTopic
             [ngModel] = "topic"
             (ngModelChange)="handleChangeTopic($event)">
@@ -67,24 +68,22 @@ interface Topic {
         <h5>Все топики в базе</h5>
         <ul>
             <ol *ngFor="let item of topicNames; let i = index;">
-                {{i + 1}}: {{item.topicName}}
-                    <input type="checkbox" (change)="onChange(item.topicName, $event.target.checked)">
+                {{i + 1}}: {{item}}
+                    <input type="checkbox" (change)="onChangeTopics(item, $event.target.checked)">
             </ol>
         </ul>
     </div>
+    <date-picker (emitDate)="settingDateFrom($event)"></date-picker>
   `
 })
 export class AppComponent implements OnDestroy {
 
     title: string;
     topic: string;
-    topicNames: Topic[] = [
-        {topicName: '111'},
-        {topicName: '222'}
-    ];
+    topicNames: any[];
 
-    fromDate: number;
-    toDate: number;
+    fromDate: string;
+    toDate: string = '2017,12,15';
     single:any[];
     multi:any[];
     dateData:any[];
@@ -128,7 +127,7 @@ export class AppComponent implements OnDestroy {
     handleInput(event: any){
         //this.topic = event.target.value;
     }
-    onChange(name:string, isChecked: boolean) {
+    onChangeTopics(name:string, isChecked: boolean) {
         if (isChecked){
             this.logService.write('Add graphic ' + name);
             this.requestByTopic(name);
@@ -188,6 +187,9 @@ export class AppComponent implements OnDestroy {
     }
 
     requestData(req){
+        if (this.fromDate && this.toDate && this.fromDate != '0,0,0' && this.toDate != '0,0,0'){
+            req = req + '&from=' + this.fromDate + '&to=' + this.toDate;
+        }
         this.apiResponseSubscription = this.graphDataService.getData(req).subscribe((response) => {
             console.debug(response);
             //this.multi = response;
@@ -200,11 +202,30 @@ export class AppComponent implements OnDestroy {
         this.apiResponseSubscription = this.graphDataService.getTopics().subscribe((response) => {
 
             console.log('The quantity of unique topics ' + response.length);
+            //console.log(this.topicNames);
+            let arr = [];
             for (let i = 0; i < response.length; i++){
-                this.topicNames[i].topicName = response[i];
+                //this.topicNames[i] = response[i];
+                arr.push(response[i]);
             }
+            this.topicNames = arr;
+            console.log(this.topicNames);
         });
     }
+
+    settingDateFrom(event){
+
+        console.log('setting up date range (From) for topic request' + event);
+        console.log(event.date.year + ',' + event.date.month + ',' + event.date.day);
+        this.fromDate = event.date.year + ',' + event.date.month + ',' + event.date.day;
+
+    }
+    settingDateTo(event: any){
+
+        console.log('setting up date range (To) for topic request');
+        this.toDate = event.date.year + ',' + event.date.month + ',' + event.date.day;
+    }
+
 
     updateData() {
         //this.logService.write('updateData()');
@@ -228,11 +249,3 @@ export class AppComponent implements OnDestroy {
     }
 
 }
-/*
- @NgModule({
- imports: [ BrowserModule, BrowserAnimationsModule, NgxChartsModule, FormsModule ],
- declarations: [ App ],
- bootstrap: [ App ]
- })
- export class AppModule {}
- */
