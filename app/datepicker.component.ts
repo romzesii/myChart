@@ -17,11 +17,11 @@ import {EventEmitter} from "events";
                [(ngModel)]="model" [options]="myOptions" #dp="ngx-mydatepicker" (dateChanged)="onDateChanged($event)"/>
 
         <span class="input-group-btn">
-            <button type="button" (click)="dp.clearDate()">
-                <i></i>
+            <button type="button" class="btn btn-default btn-sm" (click)="dp.clearDate()">
+                <i class="glyphicon glyphicon-remove"></i>
             </button>
-            <button type="button" (click)="dp.toggleCalendar()">
-                <i></i>
+            <button type="button" class="btn btn-default btn-sm" (click)="dp.toggleCalendar()">
+                <i class="glyphicon glyphicon-calendar"></i>
             </button>
         </span>
     </div>
@@ -37,17 +37,19 @@ export class DatePickerComponent {
         minYear: 2017,
         maxYear: 2036,
         satHighlight: true,
-        disableSince: {year: 2036, month: 1, day: 1}
+        dayLabels: {su: 'Вс', mo: 'Пн', tu: 'Вт', we: 'Ср', th: 'Чт', fr: 'Пт', sa: 'Сб'},
+        monthLabels: { 1: 'Январь', 2: 'Февраль', 3: 'Март', 4: 'Апрель', 5: 'Май', 6: 'Июнь', 7: 'Июль', 8: 'Август', 9: 'Сентябрь', 10: 'Октябрь', 11: 'Ноябрь', 12: 'Декабрь' },
+        todayBtnTxt: 'Сегодня'
     };
 
     // Initialized to specific date (09.10.2018)
-    model: any = { date: { year: 2017, month: 1, day: 1 } };
+    //model: any = { date: { year: 2017, month: 1, day: 1 } };
 
     constructor() { }
 
     // optional date changed callback
     @Output() public emitDate: EventEmitter<any> = new EventEmitter<any>();
-    onDateChanged(event) { //IMyDateModel
+    onDateChanged(event: IMyDateModel) { //IMyDateModel
         console.log('>>> onDateFromChanged' + event);
         //console.log(event.date.year + ',' + event.date.month + ',' + event.date.day);
         this.emitDate.emit(event);

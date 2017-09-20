@@ -3,7 +3,7 @@ body{
     text-align: center;
     font-style: normal;
     font-weight: 300;
-    font-size: 1.4rem;
+    font-size: 1.8rem;
     line-height: 2rem;
     letter-spacing: 0.01rem;
     color: #212121;
@@ -12,4 +12,9 @@ body{
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     margin:20px
+}
+
+.topic{
+    text-align: left;
+    font-size: 2rem;
 }

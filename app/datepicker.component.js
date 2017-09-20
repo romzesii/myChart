@@ -11,6 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require("@angular/core");
 // other imports here...
 var DatePickerComponent = (function () {
+    // Initialized to specific date (09.10.2018)
+    //model: any = { date: { year: 2017, month: 1, day: 1 } };
     function DatePickerComponent() {
         this.myOptions = {
             // other options...
@@ -18,10 +20,10 @@ var DatePickerComponent = (function () {
             minYear: 2017,
             maxYear: 2036,
             satHighlight: true,
-            disableSince: { year: 2036, month: 1, day: 1 }
+            dayLabels: { su: 'Вс', mo: 'Пн', tu: 'Вт', we: 'Ср', th: 'Чт', fr: 'Пт', sa: 'Сб' },
+            monthLabels: { 1: 'Январь', 2: 'Февраль', 3: 'Март', 4: 'Апрель', 5: 'Май', 6: 'Июнь', 7: 'Июль', 8: 'Август', 9: 'Сентябрь', 10: 'Октябрь', 11: 'Ноябрь', 12: 'Декабрь' },
+            todayBtnTxt: 'Сегодня'
         };
-        // Initialized to specific date (09.10.2018)
-        this.model = { date: { year: 2017, month: 1, day: 1 } };
         // optional date changed callback
         this.emitDate = new core_1.EventEmitter();
     }
@@ -39,7 +41,7 @@ __decorate([
 DatePickerComponent = __decorate([
     core_1.Component({
         selector: 'date-picker',
-        template: "\n    <!-- input box styling is bootstrap 3.3.7 -->\n<form>\n    <div class=\"input-group\">\n        <input class=\"form-control\" style=\"float:none\" placeholder=\"Select a date\" ngx-mydatepicker name=\"mydate\"\n               [(ngModel)]=\"model\" [options]=\"myOptions\" #dp=\"ngx-mydatepicker\" (dateChanged)=\"onDateChanged($event)\"/>\n\n        <span class=\"input-group-btn\">\n            <button type=\"button\" (click)=\"dp.clearDate()\">\n                <i></i>\n            </button>\n            <button type=\"button\" (click)=\"dp.toggleCalendar()\">\n                <i></i>\n            </button>\n        </span>\n    </div>\n</form>\n\n"
+        template: "\n    <!-- input box styling is bootstrap 3.3.7 -->\n<form>\n    <div class=\"input-group\">\n        <input class=\"form-control\" style=\"float:none\" placeholder=\"Select a date\" ngx-mydatepicker name=\"mydate\"\n               [(ngModel)]=\"model\" [options]=\"myOptions\" #dp=\"ngx-mydatepicker\" (dateChanged)=\"onDateChanged($event)\"/>\n\n        <span class=\"input-group-btn\">\n            <button type=\"button\" class=\"btn btn-default btn-sm\" (click)=\"dp.clearDate()\">\n                <i class=\"glyphicon glyphicon-remove\"></i>\n            </button>\n            <button type=\"button\" class=\"btn btn-default btn-sm\" (click)=\"dp.toggleCalendar()\">\n                <i class=\"glyphicon glyphicon-calendar\"></i>\n            </button>\n        </span>\n    </div>\n</form>\n\n"
     }),
     __metadata("design:paramtypes", [])
 ], DatePickerComponent);

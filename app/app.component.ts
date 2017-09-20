@@ -35,7 +35,10 @@ import {Subscription} from 'rxjs';
     styleUrls:['../app/app.component.css'],
     providers: [GraphDataService, LogService],
     template: `
-    <div class="app">{{title}}{{realTimeData ? ' in update mode' : ' in request mode'}}</div>
+    <div class="container ">
+    <div class="app" style="margin-bottom: 10px">{{title}}{{realTimeData ? ' in update mode' : ' in request mode'}}</div>
+    <div class="row">
+    <div class="col-md-8 col-sm-8 col-xs-12">
     <button (click)="turnOnUpdateMode()">Update/Generate</button>
     <button (click)="turnOnRequestMode()">HTTP Request</button>
     <button (click)="requestTopics()">Запросить топики</button>
@@ -48,6 +51,14 @@ import {Subscription} from 'rxjs';
             (ngModelChange)="handleChangeTopic($event)">
         <button (click)="requestByTopic(inputTopic.value)">Запрос по топику</button>
     </div>
+    </div>
+        <div class="col-md-4 col-sm-4 col-sm-push-0 col-xs-12 ">
+            <date-picker (emitDate)="settingDateFrom($event)"></date-picker>
+            <date-picker (emitDate)="settingDateTo($event)"></date-picker>
+        </div>
+    </div>
+    <div class="row">
+    <div class="col-md-12 col-sm-12">
     <ngx-charts-line-chart
       [view]="view"
       [scheme]="colorScheme"
@@ -64,16 +75,22 @@ import {Subscription} from 'rxjs';
       [autoScale]="autoScale"
       (select)="onSelect($event)">
     </ngx-charts-line-chart>
-    <div>
-        <h5>Все топики в базе</h5>
-        <ul>
-            <ol *ngFor="let item of topicNames; let i = index;">
-                {{i + 1}}: {{item}}
-                    <input type="checkbox" (change)="onChangeTopics(item, $event.target.checked)">
-            </ol>
-        </ul>
     </div>
-    <date-picker (emitDate)="settingDateFrom($event)"></date-picker>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+        <div>
+            <h5>Все топики в базе</h5>
+            <ul>
+                <ol *ngFor="let item of topicNames; let i = index;" class="topic">
+                    {{i + 1}}: {{item}}
+                    <input type="checkbox" (change)="onChangeTopics(item, $event.target.checked)">
+                </ol>
+            </ul>
+        </div>
+        </div>
+    </div>
+    </div>
   `
 })
 export class AppComponent implements OnDestroy {
@@ -83,7 +100,7 @@ export class AppComponent implements OnDestroy {
     topicNames: any[];
 
     fromDate: string;
-    toDate: string = '2017,12,15';
+    toDate: string;
     single:any[];
     multi:any[];
     dateData:any[];
