@@ -3,7 +3,7 @@
  */
 //our root app component
 
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, AfterViewInit} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {single, multi} from '../rooms.ts';
 import {GraphDataService} from './graphdata.service.ts';
@@ -39,21 +39,23 @@ import {Subscription} from 'rxjs';
     <div class="app" style="margin-bottom: 10px">{{title}}{{realTimeData ? ' in update mode' : ' in request mode'}}</div>
     <div class="row">
     <div class="col-md-8 col-sm-8 col-xs-12">
-    <button (click)="turnOnUpdateMode()">Update/Generate</button>
-    <button (click)="turnOnRequestMode()">HTTP Request</button>
+    <button (click)="turnOnUpdateMode()" style="display: none">Update/Generate</button>
+    <button (click)="turnOnRequestMode()" style="display: none">HTTP Request</button>
     <button (click)="requestTopics()">Запросить топики</button>
-    <div>{{topic}}</div>
+    <button (click)="updateWithRange()">Обновить по датам</button>
+    <div style="display: none">{{topic}}</div>
     <div>
         <input type="text"
+            style="display: none"
             placeholder="/kitchen/air/temperature"
             #inputTopic
             [ngModel] = "topic"
             (ngModelChange)="handleChangeTopic($event)">
-        <button (click)="requestByTopic(inputTopic.value)">Запрос по топику</button>
+        <button (click)="requestByTopic(inputTopic.value)" style="display: none">Запрос по топику</button>
     </div>
     </div>
         <div class="col-md-4 col-sm-4 col-sm-push-0 col-xs-12 ">
-            <date-picker (emitDate)="settingDateFrom($event)"></date-picker>
+            <date-picker (emitDate)="settingDateFrom($event)">от</date-picker>
             <date-picker (emitDate)="settingDateTo($event)"></date-picker>
         </div>
     </div>
@@ -77,27 +79,24 @@ import {Subscription} from 'rxjs';
     </ngx-charts-line-chart>
     </div>
     </div>
-    <div class="row">
-        <div class="col-md-12 col-sm-12">
-        <div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
             <h5>Все топики в базе</h5>
-            <ul>
                 <ol *ngFor="let item of topicNames; let i = index;" class="topic">
                     {{i + 1}}: {{item}}
                     <input type="checkbox" (change)="onChangeTopics(item, $event.target.checked)">
                 </ol>
-            </ul>
+            </div>
         </div>
-        </div>
-    </div>
     </div>
   `
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent implements OnInit {
 
     title: string;
     topic: string;
     topicNames: any[];
+    showTodayBtn = false;
 
     fromDate: string;
     toDate: string;
@@ -171,30 +170,17 @@ export class AppComponent implements OnDestroy {
         this.title  = 'Line Chart by Roman';
         this.topic = '/kitchen/air/temperature';
         Object.assign(this, {single, multi});
-        //this.rooms = rooms;
-        //this.dataService.generateData(count);
+
     }
 
     //todo update data
     ngOnInit() {
         this.logService.write("Инициализация компонента App");
-        setInterval(this.updateData.bind(this), 4000);
-        //this.logService.write('requestData()');
-        //this.requestData(); //
+        setInterval(this.updateData.bind(this), 8000);
 
-        //this.apiResponseSubscription = this.graphDataService.getData().subscribe((response) => {
-            //console.debug(response);
-            //this.multi = response;
-            //console.log(this.multi);
-
-        //});
-
-        //this.httpService.getData().subscribe((data: Response) => this.test = data.json());
-        //this.httpService.getData()
-
-        //this.multi = this.graphDataService.getData(); //todo getData() method
-        //console.log(this.httpService.getData().subscribe((data)=>this.test=data));
-
+    }
+    ngAfterViewInit() {
+        this.requestTopics();
     }
 
     ngOnDestroy() {
@@ -230,17 +216,33 @@ export class AppComponent implements OnDestroy {
         });
     }
 
+    updateWithRange() {
+        if (this.multi) {
+            let newMulti = this.multi.slice();
+            this.multi.length = 0;
+            for (let item of newMulti){
+                this.requestByTopic(item.name);
+            }
+        }
+    }
+
     settingDateFrom(event){
 
         console.log('setting up date range (From) for topic request' + event);
         console.log(event.date.year + ',' + event.date.month + ',' + event.date.day);
         this.fromDate = event.date.year + ',' + event.date.month + ',' + event.date.day;
+        if((this.fromDate === '0,0,0' && this.toDate === '0,0,0') || (this.fromDate !== '0,0,0' && this.toDate !== '0,0,0') ){
+            this.updateWithRange();
+        }
 
     }
     settingDateTo(event: any){
 
         console.log('setting up date range (To) for topic request');
         this.toDate = event.date.year + ',' + event.date.month + ',' + event.date.day;
+        if((this.fromDate === '0,0,0' && this.toDate === '0,0,0') || (this.fromDate !== '0,0,0' && this.toDate !== '0,0,0') ){
+            this.updateWithRange();
+        }
     }
 
 

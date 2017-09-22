@@ -37,6 +37,7 @@ var AppComponent = (function () {
     function AppComponent(graphDataService, logService) {
         this.graphDataService = graphDataService;
         this.logService = logService;
+        this.showTodayBtn = false;
         this.view = [700, 400];
         // options
         this.showXAxis = true;
@@ -59,8 +60,6 @@ var AppComponent = (function () {
         this.title = 'Line Chart by Roman';
         this.topic = '/kitchen/air/temperature';
         Object.assign(this, { single: rooms_ts_1.single, multi: rooms_ts_1.multi });
-        //this.rooms = rooms;
-        //this.dataService.generateData(count);
     }
     AppComponent.prototype.turnOnUpdateMode = function () {
         this.realTimeData = true;
@@ -100,18 +99,10 @@ var AppComponent = (function () {
     //todo update data
     AppComponent.prototype.ngOnInit = function () {
         this.logService.write("Инициализация компонента App");
-        setInterval(this.updateData.bind(this), 4000);
-        //this.logService.write('requestData()');
-        //this.requestData(); //
-        //this.apiResponseSubscription = this.graphDataService.getData().subscribe((response) => {
-        //console.debug(response);
-        //this.multi = response;
-        //console.log(this.multi);
-        //});
-        //this.httpService.getData().subscribe((data: Response) => this.test = data.json());
-        //this.httpService.getData()
-        //this.multi = this.graphDataService.getData(); //todo getData() method
-        //console.log(this.httpService.getData().subscribe((data)=>this.test=data));
+        setInterval(this.updateData.bind(this), 8000);
+    };
+    AppComponent.prototype.ngAfterViewInit = function () {
+        this.requestTopics();
     };
     AppComponent.prototype.ngOnDestroy = function () {
         if (this.apiResponseSubscription) {
@@ -144,14 +135,30 @@ var AppComponent = (function () {
             console.log(_this.topicNames);
         });
     };
+    AppComponent.prototype.updateWithRange = function () {
+        if (this.multi) {
+            var newMulti = this.multi.slice();
+            this.multi.length = 0;
+            for (var _i = 0, newMulti_1 = newMulti; _i < newMulti_1.length; _i++) {
+                var item = newMulti_1[_i];
+                this.requestByTopic(item.name);
+            }
+        }
+    };
     AppComponent.prototype.settingDateFrom = function (event) {
         console.log('setting up date range (From) for topic request' + event);
         console.log(event.date.year + ',' + event.date.month + ',' + event.date.day);
         this.fromDate = event.date.year + ',' + event.date.month + ',' + event.date.day;
+        if ((this.fromDate === '0,0,0' && this.toDate === '0,0,0') || (this.fromDate !== '0,0,0' && this.toDate !== '0,0,0')) {
+            this.updateWithRange();
+        }
     };
     AppComponent.prototype.settingDateTo = function (event) {
         console.log('setting up date range (To) for topic request');
         this.toDate = event.date.year + ',' + event.date.month + ',' + event.date.day;
+        if ((this.fromDate === '0,0,0' && this.toDate === '0,0,0') || (this.fromDate !== '0,0,0' && this.toDate !== '0,0,0')) {
+            this.updateWithRange();
+        }
     };
     AppComponent.prototype.updateData = function () {
         //this.logService.write('updateData()');
@@ -175,7 +182,7 @@ AppComponent = __decorate([
         selector: 'my-app',
         styleUrls: ['../app/app.component.css'],
         providers: [graphdata_service_ts_1.GraphDataService, log_service_ts_1.LogService],
-        template: "\n    <div class=\"container \">\n    <div class=\"app\" style=\"margin-bottom: 10px\">{{title}}{{realTimeData ? ' in update mode' : ' in request mode'}}</div>\n    <div class=\"row\">\n    <div class=\"col-md-8 col-sm-8 col-xs-12\">\n    <button (click)=\"turnOnUpdateMode()\">Update/Generate</button>\n    <button (click)=\"turnOnRequestMode()\">HTTP Request</button>\n    <button (click)=\"requestTopics()\">\u0417\u0430\u043F\u0440\u043E\u0441\u0438\u0442\u044C \u0442\u043E\u043F\u0438\u043A\u0438</button>\n    <div>{{topic}}</div>\n    <div>\n        <input type=\"text\"\n            placeholder=\"/kitchen/air/temperature\"\n            #inputTopic\n            [ngModel] = \"topic\"\n            (ngModelChange)=\"handleChangeTopic($event)\">\n        <button (click)=\"requestByTopic(inputTopic.value)\">\u0417\u0430\u043F\u0440\u043E\u0441 \u043F\u043E \u0442\u043E\u043F\u0438\u043A\u0443</button>\n    </div>\n    </div>\n        <div class=\"col-md-4 col-sm-4 col-sm-push-0 col-xs-12 \">\n            <date-picker (emitDate)=\"settingDateFrom($event)\"></date-picker>\n            <date-picker (emitDate)=\"settingDateTo($event)\"></date-picker>\n        </div>\n    </div>\n    <div class=\"row\">\n    <div class=\"col-md-12 col-sm-12\">\n    <ngx-charts-line-chart\n      [view]=\"view\"\n      [scheme]=\"colorScheme\"\n      [results]=\"multi\"\n      [gradient]=\"gradient\"\n      [xAxis]=\"showXAxis\"\n      [yAxis]=\"showYAxis\"\n      [legend]=\"showLegend\"\n      [timeline]=\"timeline\"\n      [showXAxisLabel]=\"showXAxisLabel\"\n      [showYAxisLabel]=\"showYAxisLabel\"\n      [xAxisLabel]=\"xAxisLabel\"\n      [yAxisLabel]=\"yAxisLabel\"\n      [autoScale]=\"autoScale\"\n      (select)=\"onSelect($event)\">\n    </ngx-charts-line-chart>\n    </div>\n    </div>\n    <div class=\"row\">\n        <div class=\"col-md-12 col-sm-12\">\n        <div>\n            <h5>\u0412\u0441\u0435 \u0442\u043E\u043F\u0438\u043A\u0438 \u0432 \u0431\u0430\u0437\u0435</h5>\n            <ul>\n                <ol *ngFor=\"let item of topicNames; let i = index;\" class=\"topic\">\n                    {{i + 1}}: {{item}}\n                    <input type=\"checkbox\" (change)=\"onChangeTopics(item, $event.target.checked)\">\n                </ol>\n            </ul>\n        </div>\n        </div>\n    </div>\n    </div>\n  "
+        template: "\n    <div class=\"container \">\n    <div class=\"app\" style=\"margin-bottom: 10px\">{{title}}{{realTimeData ? ' in update mode' : ' in request mode'}}</div>\n    <div class=\"row\">\n    <div class=\"col-md-8 col-sm-8 col-xs-12\">\n    <button (click)=\"turnOnUpdateMode()\" style=\"display: none\">Update/Generate</button>\n    <button (click)=\"turnOnRequestMode()\" style=\"display: none\">HTTP Request</button>\n    <button (click)=\"requestTopics()\">\u0417\u0430\u043F\u0440\u043E\u0441\u0438\u0442\u044C \u0442\u043E\u043F\u0438\u043A\u0438</button>\n    <button (click)=\"updateWithRange()\">\u041E\u0431\u043D\u043E\u0432\u0438\u0442\u044C \u043F\u043E \u0434\u0430\u0442\u0430\u043C</button>\n    <div style=\"display: none\">{{topic}}</div>\n    <div>\n        <input type=\"text\"\n            style=\"display: none\"\n            placeholder=\"/kitchen/air/temperature\"\n            #inputTopic\n            [ngModel] = \"topic\"\n            (ngModelChange)=\"handleChangeTopic($event)\">\n        <button (click)=\"requestByTopic(inputTopic.value)\" style=\"display: none\">\u0417\u0430\u043F\u0440\u043E\u0441 \u043F\u043E \u0442\u043E\u043F\u0438\u043A\u0443</button>\n    </div>\n    </div>\n        <div class=\"col-md-4 col-sm-4 col-sm-push-0 col-xs-12 \">\n            <date-picker (emitDate)=\"settingDateFrom($event)\">\u043E\u0442</date-picker>\n            <date-picker (emitDate)=\"settingDateTo($event)\"></date-picker>\n        </div>\n    </div>\n    <div class=\"row\">\n    <div class=\"col-md-12 col-sm-12\">\n    <ngx-charts-line-chart\n      [view]=\"view\"\n      [scheme]=\"colorScheme\"\n      [results]=\"multi\"\n      [gradient]=\"gradient\"\n      [xAxis]=\"showXAxis\"\n      [yAxis]=\"showYAxis\"\n      [legend]=\"showLegend\"\n      [timeline]=\"timeline\"\n      [showXAxisLabel]=\"showXAxisLabel\"\n      [showYAxisLabel]=\"showYAxisLabel\"\n      [xAxisLabel]=\"xAxisLabel\"\n      [yAxisLabel]=\"yAxisLabel\"\n      [autoScale]=\"autoScale\"\n      (select)=\"onSelect($event)\">\n    </ngx-charts-line-chart>\n    </div>\n    </div>\n        <div class=\"row\">\n            <div class=\"col-md-12 col-sm-12\">\n            <h5>\u0412\u0441\u0435 \u0442\u043E\u043F\u0438\u043A\u0438 \u0432 \u0431\u0430\u0437\u0435</h5>\n                <ol *ngFor=\"let item of topicNames; let i = index;\" class=\"topic\">\n                    {{i + 1}}: {{item}}\n                    <input type=\"checkbox\" (change)=\"onChangeTopics(item, $event.target.checked)\">\n                </ol>\n            </div>\n        </div>\n    </div>\n  "
     }),
     __metadata("design:paramtypes", [typeof (_a = typeof graphdata_service_ts_1.GraphDataService !== "undefined" && graphdata_service_ts_1.GraphDataService) === "function" && _a || Object, typeof (_b = typeof log_service_ts_1.LogService !== "undefined" && log_service_ts_1.LogService) === "function" && _b || Object])
 ], AppComponent);

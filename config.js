@@ -10,13 +10,13 @@ System.config({
     },
     //map tells the System loader where to look for things
     map: {
-        app: "./src",
+        app: "./app",
         // '@angular/core': 'https://npmcdn.com/@angular/core@4.0.1/bundles/core.umd.js',
         '@angular/core': 'node_modules/@angular/core/bundles/core.umd.min.js',
         //'@angular/http': 'https://npmcdn.com/@angular/http@4.0.1/bundles/http.umd.js',
         '@angular/http': 'node_modules/@angular/http/bundles/http.umd.js',
-        '@angular/compiler': 'https://npmcdn.com/@angular/compiler@4.0.1/bundles/compiler.umd.js',
-        '@angular/common': 'https://npmcdn.com/@angular/common@4.0.1/bundles/common.umd.js',
+        '@angular/compiler': 'node_modules/@angular/compiler/bundles/compiler.umd.js',
+        '@angular/common': 'node_modules/@angular/common/bundles/common.umd.js',
         '@angular/platform-browser-dynamic': 'https://npmcdn.com/@angular/platform-browser-dynamic@4.0.1/bundles/platform-browser-dynamic.umd.js',
         '@angular/platform-browser': 'https://npmcdn.com/@angular/platform-browser@4.0.1/bundles/platform-browser.umd.js',
         '@angular/animations': 'https://npmcdn.com/@angular/animations@4.0.1/bundles/animations.umd.js',
@@ -53,7 +53,7 @@ System.config({
     //packages defines our app package
     packages: {
         app: {
-            main: './bootstrap.ts',
+            main: './main.ts',
             defaultExtension: 'ts'
         },
         'rxjs': {
