@@ -82,7 +82,7 @@ var GraphDataService = (function () {
     };
     GraphDataService.prototype.getTopics = function () {
         this.logService.write('graphDataService...запрос всех топиков');
-        return this.http.get(this.requestBtcUrl.concat('?get=topics')).map(function (res) { return res.json(); });
+        return this.http.get(this.requestBtcUrl.concat('?get=topic')).map(function (res) { return res.json(); });
     };
     return GraphDataService;
 }());

@@ -39,10 +39,11 @@ import {Subscription} from 'rxjs';
     <div class="app" style="margin-bottom: 10px">{{title}}{{realTimeData ? ' in update mode' : ' in request mode'}}</div>
     <div class="row">
     <div class="col-md-8 col-sm-8 col-xs-12">
-    <button (click)="turnOnUpdateMode()" style="display: none">Update/Generate</button>
-    <button (click)="turnOnRequestMode()" style="display: none">HTTP Request</button>
+    <button (click)="turnOnUpdateMode()">Update/Generate</button>
+    <button (click)="turnOnRequestMode()">HTTP Request</button>
     <button (click)="requestTopics()">Запросить топики</button>
     <button (click)="updateWithRange()">Обновить по датам</button>
+    <label><input type="checkbox" (change)="onChangeMode(item, $event.target.checked)">Timeline</label>
     <div style="display: none">{{topic}}</div>
     <div>
         <input type="text"
@@ -55,7 +56,7 @@ import {Subscription} from 'rxjs';
     </div>
     </div>
         <div class="col-md-4 col-sm-4 col-sm-push-0 col-xs-12 ">
-            <date-picker (emitDate)="settingDateFrom($event)">от</date-picker>
+            <date-picker (emitDate)="settingDateFrom($event)"></date-picker>
             <date-picker (emitDate)="settingDateTo($event)"></date-picker>
         </div>
     </div>
@@ -98,8 +99,8 @@ export class AppComponent implements OnInit {
     topicNames: any[];
     showTodayBtn = false;
 
-    fromDate: string;
-    toDate: string;
+    fromDate: number;
+    toDate: number;
     single:any[];
     multi:any[];
     dateData:any[];
@@ -142,6 +143,16 @@ export class AppComponent implements OnInit {
     }
     handleInput(event: any){
         //this.topic = event.target.value;
+    }
+    onChangeMode(name:string, isChecked: boolean){
+        if (isChecked){
+            this.logService.write('Timeline enabled');
+            this.timeline = true;
+        }
+        if (!isChecked) {
+            this.logService.write('Timeline disabled');
+            this.timeline = false;
+        }
     }
     onChangeTopics(name:string, isChecked: boolean) {
         if (isChecked){
@@ -190,7 +201,7 @@ export class AppComponent implements OnInit {
     }
 
     requestData(req){
-        if (this.fromDate && this.toDate && this.fromDate != '0,0,0' && this.toDate != '0,0,0'){
+        if (this.fromDate > 0 && this.toDate > 0){
             req = req + '&from=' + this.fromDate + '&to=' + this.toDate;
         }
         this.apiResponseSubscription = this.graphDataService.getData(req).subscribe((response) => {
@@ -230,8 +241,9 @@ export class AppComponent implements OnInit {
 
         console.log('setting up date range (From) for topic request' + event);
         console.log(event.date.year + ',' + event.date.month + ',' + event.date.day);
-        this.fromDate = event.date.year + ',' + event.date.month + ',' + event.date.day;
-        if((this.fromDate === '0,0,0' && this.toDate === '0,0,0') || (this.fromDate !== '0,0,0' && this.toDate !== '0,0,0') ){
+        console.log(event.epoc);
+        this.fromDate = event.epoc * 1000;
+        if((this.fromDate === 0 && this.toDate === 0) || (this.fromDate > 0 && this.toDate > 0)){
             this.updateWithRange();
         }
 
@@ -239,8 +251,10 @@ export class AppComponent implements OnInit {
     settingDateTo(event: any){
 
         console.log('setting up date range (To) for topic request');
-        this.toDate = event.date.year + ',' + event.date.month + ',' + event.date.day;
-        if((this.fromDate === '0,0,0' && this.toDate === '0,0,0') || (this.fromDate !== '0,0,0' && this.toDate !== '0,0,0') ){
+        console.log(event.date.year + ',' + event.date.month + ',' + event.date.day);
+        console.log(event.epoc);
+        this.toDate = event.epoc * 1000;
+        if((this.fromDate === 0 && this.toDate === 0) || (this.fromDate > 0 && this.toDate > 0)){
             this.updateWithRange();
         }
     }
