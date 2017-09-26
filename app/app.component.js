@@ -61,6 +61,14 @@ var AppComponent = (function () {
         this.topic = '/kitchen/air/temperature';
         Object.assign(this, { single: rooms_ts_1.single, multi: rooms_ts_1.multi });
     }
+    AppComponent.prototype.tagCheck = function (name, event) {
+        console.log(name);
+        console.log(event);
+        if (name) {
+            this.logService.write('Add tag ' + name);
+            this.logService.write('Remove tag ' + name); //todo toggle button
+        }
+    };
     AppComponent.prototype.turnOnUpdateMode = function () {
         this.realTimeData = true;
     };
@@ -78,7 +86,7 @@ var AppComponent = (function () {
     AppComponent.prototype.handleInput = function (event) {
         //this.topic = event.target.value;
     };
-    AppComponent.prototype.onChangeMode = function (name, isChecked) {
+    AppComponent.prototype.onChangeZoom = function (isChecked) {
         if (isChecked) {
             this.logService.write('Timeline enabled');
             this.timeline = true;
@@ -143,7 +151,26 @@ var AppComponent = (function () {
             }
             _this.topicNames = arr;
             console.log(_this.topicNames);
+            _this.drawTags();
         });
+    };
+    AppComponent.prototype.drawTags = function () {
+        var newArr = this.topicNames.slice();
+        var arr = [];
+        for (var _i = 0, newArr_1 = newArr; _i < newArr_1.length; _i++) {
+            var item = newArr_1[_i];
+            var tags = item.split('/');
+            arr = arr.concat(tags);
+        }
+        var tagsArr = new Set();
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i] !== '') {
+                tagsArr.add(arr[i]);
+            }
+        }
+        //let tagsArr = Array.from(new Set(arr));
+        this.topicTags = tagsArr;
+        console.log(this.topicTags);
     };
     AppComponent.prototype.updateWithRange = function () {
         if (this.multi) {
@@ -195,7 +222,7 @@ AppComponent = __decorate([
         selector: 'my-app',
         styleUrls: ['../app/app.component.css'],
         providers: [graphdata_service_ts_1.GraphDataService, log_service_ts_1.LogService],
-        template: "\n    <div class=\"container \">\n    <div class=\"app\" style=\"margin-bottom: 10px\">{{title}}{{realTimeData ? ' in update mode' : ' in request mode'}}</div>\n    <div class=\"row\">\n    <div class=\"col-md-8 col-sm-8 col-xs-12\">\n    <button (click)=\"turnOnUpdateMode()\">Update/Generate</button>\n    <button (click)=\"turnOnRequestMode()\">HTTP Request</button>\n    <button (click)=\"requestTopics()\">\u0417\u0430\u043F\u0440\u043E\u0441\u0438\u0442\u044C \u0442\u043E\u043F\u0438\u043A\u0438</button>\n    <button (click)=\"updateWithRange()\">\u041E\u0431\u043D\u043E\u0432\u0438\u0442\u044C \u043F\u043E \u0434\u0430\u0442\u0430\u043C</button>\n    <label><input type=\"checkbox\" (change)=\"onChangeMode(item, $event.target.checked)\">Timeline</label>\n    <div style=\"display: none\">{{topic}}</div>\n    <div>\n        <input type=\"text\"\n            style=\"display: none\"\n            placeholder=\"/kitchen/air/temperature\"\n            #inputTopic\n            [ngModel] = \"topic\"\n            (ngModelChange)=\"handleChangeTopic($event)\">\n        <button (click)=\"requestByTopic(inputTopic.value)\" style=\"display: none\">\u0417\u0430\u043F\u0440\u043E\u0441 \u043F\u043E \u0442\u043E\u043F\u0438\u043A\u0443</button>\n    </div>\n    </div>\n        <div class=\"col-md-4 col-sm-4 col-sm-push-0 col-xs-12 \">\n            <date-picker (emitDate)=\"settingDateFrom($event)\"></date-picker>\n            <date-picker (emitDate)=\"settingDateTo($event)\"></date-picker>\n        </div>\n    </div>\n    <div class=\"row\">\n    <div class=\"col-md-12 col-sm-12\">\n    <ngx-charts-line-chart\n      [view]=\"view\"\n      [scheme]=\"colorScheme\"\n      [results]=\"multi\"\n      [gradient]=\"gradient\"\n      [xAxis]=\"showXAxis\"\n      [yAxis]=\"showYAxis\"\n      [legend]=\"showLegend\"\n      [timeline]=\"timeline\"\n      [showXAxisLabel]=\"showXAxisLabel\"\n      [showYAxisLabel]=\"showYAxisLabel\"\n      [xAxisLabel]=\"xAxisLabel\"\n      [yAxisLabel]=\"yAxisLabel\"\n      [autoScale]=\"autoScale\"\n      (select)=\"onSelect($event)\">\n    </ngx-charts-line-chart>\n    </div>\n    </div>\n        <div class=\"row\">\n            <div class=\"col-md-12 col-sm-12\">\n            <h5>\u0412\u0441\u0435 \u0442\u043E\u043F\u0438\u043A\u0438 \u0432 \u0431\u0430\u0437\u0435</h5>\n                <ol *ngFor=\"let item of topicNames; let i = index;\" class=\"topic\">\n                    {{i + 1}}: {{item}}\n                    <input type=\"checkbox\" (change)=\"onChangeTopics(item, $event.target.checked)\">\n                </ol>\n            </div>\n        </div>\n    </div>\n  "
+        template: "\n    <div class=\"container \">\n    <div class=\"app\" style=\"margin-bottom: 10px\">{{title}}{{realTimeData ? ' in update mode' : ' in request mode'}}</div>\n    <div class=\"row\">\n    <div class=\"col-md-8 col-sm-8 col-xs-12\">\n    <button (click)=\"turnOnUpdateMode()\">Update/Generate</button>\n    <button (click)=\"turnOnRequestMode()\">HTTP Request</button>\n    <button (click)=\"requestTopics()\">\u0417\u0430\u043F\u0440\u043E\u0441\u0438\u0442\u044C \u0442\u043E\u043F\u0438\u043A\u0438</button>\n    <button (click)=\"updateWithRange()\">\u041E\u0431\u043D\u043E\u0432\u0438\u0442\u044C \u043F\u043E \u0434\u0430\u0442\u0430\u043C</button>\n    <label><input type=\"checkbox\" (change)=\"onChangeZoom($event.target.checked)\">Timeline</label>\n    <div style=\"display: none\">{{topic}}</div>\n    <div>\n        <input type=\"text\"\n            style=\"display: none\"\n            placeholder=\"/kitchen/air/temperature\"\n            #inputTopic\n            [ngModel] = \"topic\"\n            (ngModelChange)=\"handleChangeTopic($event)\">\n        <button (click)=\"requestByTopic(inputTopic.value)\" style=\"display: none\">\u0417\u0430\u043F\u0440\u043E\u0441 \u043F\u043E \u0442\u043E\u043F\u0438\u043A\u0443</button>\n    </div>\n    </div>\n        <div class=\"col-md-4 col-sm-4 col-sm-push-0 col-xs-12 \">\n            <date-picker (emitDate)=\"settingDateFrom($event)\"></date-picker>\n            <date-picker (emitDate)=\"settingDateTo($event)\"></date-picker>\n        </div>\n    </div>\n    <div class=\"row\">\n    <div class=\"col-md-12 col-sm-12\">\n    <ngx-charts-line-chart\n      [view]=\"view\"\n      [scheme]=\"colorScheme\"\n      [results]=\"multi\"\n      [gradient]=\"gradient\"\n      [xAxis]=\"showXAxis\"\n      [yAxis]=\"showYAxis\"\n      [legend]=\"showLegend\"\n      [timeline]=\"timeline\"\n      [showXAxisLabel]=\"showXAxisLabel\"\n      [showYAxisLabel]=\"showYAxisLabel\"\n      [xAxisLabel]=\"xAxisLabel\"\n      [yAxisLabel]=\"yAxisLabel\"\n      [autoScale]=\"autoScale\"\n      (select)=\"onSelect($event)\">\n    </ngx-charts-line-chart>\n    </div>\n    </div>\n        <div class=\"row\">\n            <div class=\"col-md-6 col-sm-6\">\n            <h3>\u0412\u0441\u0435 \u0442\u043E\u043F\u0438\u043A\u0438 \u0432 \u0431\u0430\u0437\u0435</h3>\n                <ol *ngFor=\"let item of topicNames; let i = index;\" class=\"topic\">\n                    {{i + 1}}: {{item}}\n                    <input type=\"checkbox\" (change)=\"onChangeTopics(item, $event.target.checked)\">\n                </ol>\n            </div>\n            <div class=\"col-md-3 col-sm-3\">\n            <h3>Tags</h3>\n                <ol *ngFor=\"let tag of topicTags; let i = index;\" class=\"topic\">\n                    {{i + 1}}\n                    <button (click)=\"tagCheck(tag, $event.target)\" id=\"tagcheck\">{{tag}}</button>\n                </ol>\n            </div>\n            <!--<label *ngFor=\"let tag of topicTags; let i = index;\" class=\"btn btn-primary\" [(ngModel)]=\"checkButtonModel\"  btnCheckbox>{{tag}}</label> -->\n            \n    </div>\n  "
     }),
     __metadata("design:paramtypes", [typeof (_a = typeof graphdata_service_ts_1.GraphDataService !== "undefined" && graphdata_service_ts_1.GraphDataService) === "function" && _a || Object, typeof (_b = typeof log_service_ts_1.LogService !== "undefined" && log_service_ts_1.LogService) === "function" && _b || Object])
 ], AppComponent);

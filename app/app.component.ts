@@ -43,7 +43,7 @@ import {Subscription} from 'rxjs';
     <button (click)="turnOnRequestMode()">HTTP Request</button>
     <button (click)="requestTopics()">Запросить топики</button>
     <button (click)="updateWithRange()">Обновить по датам</button>
-    <label><input type="checkbox" (change)="onChangeMode(item, $event.target.checked)">Timeline</label>
+    <label><input type="checkbox" (change)="onChangeZoom($event.target.checked)">Timeline</label>
     <div style="display: none">{{topic}}</div>
     <div>
         <input type="text"
@@ -81,14 +81,22 @@ import {Subscription} from 'rxjs';
     </div>
     </div>
         <div class="row">
-            <div class="col-md-12 col-sm-12">
-            <h5>Все топики в базе</h5>
+            <div class="col-md-6 col-sm-6">
+            <h3>Все топики в базе</h3>
                 <ol *ngFor="let item of topicNames; let i = index;" class="topic">
                     {{i + 1}}: {{item}}
                     <input type="checkbox" (change)="onChangeTopics(item, $event.target.checked)">
                 </ol>
             </div>
-        </div>
+            <div class="col-md-3 col-sm-3">
+            <h3>Tags</h3>
+                <ol *ngFor="let tag of topicTags; let i = index;" class="topic">
+                    {{i + 1}}
+                    <button (click)="tagCheck(tag, $event.target)" id="tagcheck">{{tag}}</button>
+                </ol>
+            </div>
+            <!--<label *ngFor="let tag of topicTags; let i = index;" class="btn btn-primary" [(ngModel)]="checkButtonModel"  btnCheckbox>{{tag}}</label> -->
+            
     </div>
   `
 })
@@ -97,6 +105,7 @@ export class AppComponent implements OnInit {
     title: string;
     topic: string;
     topicNames: any[];
+    topicTags: any[];
     showTodayBtn = false;
 
     fromDate: number;
@@ -126,6 +135,16 @@ export class AppComponent implements OnInit {
     colorScheme = {
         domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
     };
+
+    tagCheck(name:string, event: any) {
+        console.log(name);
+        console.log(event);
+        if (name){
+            this.logService.write('Add tag ' + name);
+            this.logService.write('Remove tag ' + name); //todo toggle button
+        }
+    }
+
     turnOnUpdateMode(){
         this.realTimeData = true;
 
@@ -144,7 +163,7 @@ export class AppComponent implements OnInit {
     handleInput(event: any){
         //this.topic = event.target.value;
     }
-    onChangeMode(name:string, isChecked: boolean){
+    onChangeZoom(isChecked: boolean){
         if (isChecked){
             this.logService.write('Timeline enabled');
             this.timeline = true;
@@ -224,7 +243,28 @@ export class AppComponent implements OnInit {
             }
             this.topicNames = arr;
             console.log(this.topicNames);
+            this.drawTags();
         });
+    }
+
+    drawTags(){
+        let newArr = this.topicNames.slice();
+        let arr = [];
+        for (let item of newArr) {
+            let tags = item.split('/');
+            arr = arr.concat(tags);
+        }
+
+        let tagsArr = new Set();
+        for (let i = 0; i < arr.length; i++){
+            if (arr[i] !== ''){
+                tagsArr.add(arr[i]);
+            }
+        }
+
+        //let tagsArr = Array.from(new Set(arr));
+        this.topicTags = tagsArr;
+        console.log(this.topicTags);
     }
 
     updateWithRange() {

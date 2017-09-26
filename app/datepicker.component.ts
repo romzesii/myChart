@@ -26,7 +26,6 @@ import {EventEmitter} from "events";
         </span>
     </div>
 </form>
-
 `
 })
 export class DatePickerComponent {
