@@ -16,7 +16,6 @@ var core_1 = require("@angular/core");
 var rooms_ts_1 = require("../rooms.ts");
 var graphdata_service_ts_1 = require("./graphdata.service.ts");
 var log_service_ts_1 = require("./log.service.ts");
-//import { DatePickerOptions, DateModel } from 'ng2-datepicker';
 /*
 
  import { FormsModule } from '@angular/forms';
@@ -37,6 +36,8 @@ var AppComponent = (function () {
     function AppComponent(graphDataService, logService) {
         this.graphDataService = graphDataService;
         this.logService = logService;
+        this.topicPreviewState = [];
+        this.topicTagsForSearch = [];
         this.showTodayBtn = false;
         this.view = [700, 400];
         // options
@@ -61,12 +62,56 @@ var AppComponent = (function () {
         this.topic = '/kitchen/air/temperature';
         Object.assign(this, { single: rooms_ts_1.single, multi: rooms_ts_1.multi });
     }
-    AppComponent.prototype.tagCheck = function (name, event) {
+    AppComponent.prototype.onChangeTags = function (name, event) {
         console.log(name);
         console.log(event);
-        if (name) {
+        if (event === 'false') {
+            event = true;
+            //this.topicTagsForSearch = tagSelected;
+            var newTags = this.topicTagsForSearch.concat(name);
+            this.topicTagsForSearch = newTags;
+            //console.log(this.topicTagsForSearch);
             this.logService.write('Add tag ' + name);
-            this.logService.write('Remove tag ' + name); //todo toggle button
+        }
+        else {
+            event = false;
+            var tagSelected = this.topicTagsForSearch.filter(function (item) {
+                return item != name;
+            });
+            this.topicTagsForSearch = tagSelected;
+            //console.log(this.topicTagsForSearch);
+            this.logService.write('Remove tag ' + name);
+        }
+        console.log(this.topicTagsForSearch);
+        console.log(event);
+        this.previewTopicsByTags();
+    };
+    AppComponent.prototype.previewTopicsByTags = function () {
+        var _topicNamesPreview = [];
+        if (this.topicTagsForSearch.length > 0) {
+            for (var _i = 0, _a = this.topicNames; _i < _a.length; _i++) {
+                var topic = _a[_i];
+                var counter = 0;
+                for (var _b = 0, _c = this.topicTagsForSearch; _b < _c.length; _b++) {
+                    var item = _c[_b];
+                    if (topic.indexOf(item) === -1) {
+                        console.log("The item " + item + " not found");
+                    }
+                    else {
+                        console.log("The item " + item + " is found");
+                        counter++;
+                    }
+                }
+                if (counter === this.topicTagsForSearch.length) {
+                    _topicNamesPreview = _topicNamesPreview.concat(topic);
+                    this.topicNamesPreview = _topicNamesPreview.slice();
+                    console.log(this.topicNamesPreview);
+                }
+            }
+        }
+        else {
+            this.topicNamesPreview = this.topicNames.slice();
+            console.log(this.topicNamesPreview);
         }
     };
     AppComponent.prototype.turnOnUpdateMode = function () {
@@ -118,6 +163,8 @@ var AppComponent = (function () {
     AppComponent.prototype.ngOnInit = function () {
         this.logService.write("Инициализация компонента App");
         setInterval(this.updateData.bind(this), 8000);
+        //var tagStateDefault = document.getElementById("tagcheck");
+        //tagStateDefault.setAttribute('aria-pressed', false);
     };
     AppComponent.prototype.ngAfterViewInit = function () {
         this.requestTopics();
@@ -151,6 +198,7 @@ var AppComponent = (function () {
             }
             _this.topicNames = arr;
             console.log(_this.topicNames);
+            _this.topicNamesPreview = _this.topicNames.slice();
             _this.drawTags();
         });
     };
@@ -222,7 +270,7 @@ AppComponent = __decorate([
         selector: 'my-app',
         styleUrls: ['../app/app.component.css'],
         providers: [graphdata_service_ts_1.GraphDataService, log_service_ts_1.LogService],
-        template: "\n    <div class=\"container \">\n    <div class=\"app\" style=\"margin-bottom: 10px\">{{title}}{{realTimeData ? ' in update mode' : ' in request mode'}}</div>\n    <div class=\"row\">\n    <div class=\"col-md-8 col-sm-8 col-xs-12\">\n    <button (click)=\"turnOnUpdateMode()\">Update/Generate</button>\n    <button (click)=\"turnOnRequestMode()\">HTTP Request</button>\n    <button (click)=\"requestTopics()\">\u0417\u0430\u043F\u0440\u043E\u0441\u0438\u0442\u044C \u0442\u043E\u043F\u0438\u043A\u0438</button>\n    <button (click)=\"updateWithRange()\">\u041E\u0431\u043D\u043E\u0432\u0438\u0442\u044C \u043F\u043E \u0434\u0430\u0442\u0430\u043C</button>\n    <label><input type=\"checkbox\" (change)=\"onChangeZoom($event.target.checked)\">Timeline</label>\n    <div style=\"display: none\">{{topic}}</div>\n    <div>\n        <input type=\"text\"\n            style=\"display: none\"\n            placeholder=\"/kitchen/air/temperature\"\n            #inputTopic\n            [ngModel] = \"topic\"\n            (ngModelChange)=\"handleChangeTopic($event)\">\n        <button (click)=\"requestByTopic(inputTopic.value)\" style=\"display: none\">\u0417\u0430\u043F\u0440\u043E\u0441 \u043F\u043E \u0442\u043E\u043F\u0438\u043A\u0443</button>\n    </div>\n    </div>\n        <div class=\"col-md-4 col-sm-4 col-sm-push-0 col-xs-12 \">\n            <date-picker (emitDate)=\"settingDateFrom($event)\"></date-picker>\n            <date-picker (emitDate)=\"settingDateTo($event)\"></date-picker>\n        </div>\n    </div>\n    <div class=\"row\">\n    <div class=\"col-md-12 col-sm-12\">\n    <ngx-charts-line-chart\n      [view]=\"view\"\n      [scheme]=\"colorScheme\"\n      [results]=\"multi\"\n      [gradient]=\"gradient\"\n      [xAxis]=\"showXAxis\"\n      [yAxis]=\"showYAxis\"\n      [legend]=\"showLegend\"\n      [timeline]=\"timeline\"\n      [showXAxisLabel]=\"showXAxisLabel\"\n      [showYAxisLabel]=\"showYAxisLabel\"\n      [xAxisLabel]=\"xAxisLabel\"\n      [yAxisLabel]=\"yAxisLabel\"\n      [autoScale]=\"autoScale\"\n      (select)=\"onSelect($event)\">\n    </ngx-charts-line-chart>\n    </div>\n    </div>\n        <div class=\"row\">\n            <div class=\"col-md-6 col-sm-6\">\n            <h3>\u0412\u0441\u0435 \u0442\u043E\u043F\u0438\u043A\u0438 \u0432 \u0431\u0430\u0437\u0435</h3>\n                <ol *ngFor=\"let item of topicNames; let i = index;\" class=\"topic\">\n                    {{i + 1}}: {{item}}\n                    <input type=\"checkbox\" (change)=\"onChangeTopics(item, $event.target.checked)\">\n                </ol>\n            </div>\n            <div class=\"col-md-3 col-sm-3\">\n            <h3>Tags</h3>\n                <ol *ngFor=\"let tag of topicTags; let i = index;\" class=\"topic\">\n                    {{i + 1}}\n                    <button (click)=\"tagCheck(tag, $event.target)\" id=\"tagcheck\">{{tag}}</button>\n                </ol>\n            </div>\n            <!--<label *ngFor=\"let tag of topicTags; let i = index;\" class=\"btn btn-primary\" [(ngModel)]=\"checkButtonModel\"  btnCheckbox>{{tag}}</label> -->\n            \n    </div>\n  "
+        template: "\n    <div class=\"container \">\n    <div class=\"app\" style=\"margin-bottom: 10px\">{{title}}{{realTimeData ? ' in update mode' : ' in request mode'}}</div>\n    <div class=\"row\">\n    <div class=\"col-md-8 col-sm-8 col-xs-12\">\n    <button (click)=\"turnOnUpdateMode()\">Update/Generate</button>\n    <button (click)=\"turnOnRequestMode()\">HTTP Request</button>\n    <button (click)=\"requestTopics()\">\u0417\u0430\u043F\u0440\u043E\u0441\u0438\u0442\u044C \u0442\u043E\u043F\u0438\u043A\u0438</button>\n    <button (click)=\"updateWithRange()\">\u041E\u0431\u043D\u043E\u0432\u0438\u0442\u044C \u043F\u043E \u0434\u0430\u0442\u0430\u043C</button>\n    <label><input type=\"checkbox\" (change)=\"onChangeZoom($event.target.checked)\">Timeline</label>\n    <div style=\"display: none\">{{topic}}</div>\n    <div>\n        <input type=\"text\"\n            style=\"display: none\"\n            placeholder=\"/kitchen/air/temperature\"\n            #inputTopic\n            [ngModel] = \"topic\"\n            (ngModelChange)=\"handleChangeTopic($event)\">\n        <button (click)=\"requestByTopic(inputTopic.value)\" style=\"display: none\">\u0417\u0430\u043F\u0440\u043E\u0441 \u043F\u043E \u0442\u043E\u043F\u0438\u043A\u0443</button>\n    </div>\n    </div>\n        <div class=\"col-md-4 col-sm-4 col-sm-push-0 col-xs-12 \">\n            <date-picker (emitDate)=\"settingDateFrom($event)\"></date-picker>\n            <date-picker (emitDate)=\"settingDateTo($event)\"></date-picker>\n        </div>\n    </div>\n    <div class=\"row\">\n    <div class=\"col-md-12 col-sm-12\">\n    <ngx-charts-line-chart\n      [view]=\"view\"\n      [scheme]=\"colorScheme\"\n      [results]=\"multi\"\n      [gradient]=\"gradient\"\n      [xAxis]=\"showXAxis\"\n      [yAxis]=\"showYAxis\"\n      [legend]=\"showLegend\"\n      [timeline]=\"timeline\"\n      [showXAxisLabel]=\"showXAxisLabel\"\n      [showYAxisLabel]=\"showYAxisLabel\"\n      [xAxisLabel]=\"xAxisLabel\"\n      [yAxisLabel]=\"yAxisLabel\"\n      [autoScale]=\"autoScale\"\n      (select)=\"onSelect($event)\">\n    </ngx-charts-line-chart>\n    </div>\n    </div>\n        <div class=\"row\">\n            <div class=\"col-md-6 col-sm-6\">\n            <h3>\u0412\u0441\u0435 \u0442\u043E\u043F\u0438\u043A\u0438 \u0432 \u0431\u0430\u0437\u0435</h3>\n                <ol *ngFor=\"let item of topicNamesPreview; let i = index;\" class=\"topic\">\n                    {{i + 1}}: {{item}}\n                    <input type=\"checkbox\" (change)=\"onChangeTopics(item, $event.target.checked)\" [(ngModel)]=\"topicPreviewState[i]\">\n                </ol>\n            </div>\n            <div class=\"col-md-3 col-sm-3\">\n            <h3>Tags</h3>\n                <ol *ngFor=\"let tag of topicTags; let i = index;\" class=\"topic\">\n                    {{i + 1}}\n                    <button aria-pressed=\"false\"\n                    (click)=\"onChangeTags(tag, $event.target.getAttribute('aria-pressed'))\"\n                    id=\"tagcheck\" type=\"button\"\n                    class=\"btn btn-default\"\n                    data-toggle=\"button\">\n                    {{tag}}\n                    </button>\n                </ol>\n            </div>\n            <!--<label *ngFor=\"let tag of topicTags; let i = index;\" class=\"btn btn-primary\" [(ngModel)]=\"checkButtonModel\"  btnCheckbox>{{tag}}</label> -->\n            \n    </div>\n  "
     }),
     __metadata("design:paramtypes", [typeof (_a = typeof graphdata_service_ts_1.GraphDataService !== "undefined" && graphdata_service_ts_1.GraphDataService) === "function" && _a || Object, typeof (_b = typeof log_service_ts_1.LogService !== "undefined" && log_service_ts_1.LogService) === "function" && _b || Object])
 ], AppComponent);

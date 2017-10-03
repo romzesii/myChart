@@ -13,7 +13,6 @@ import {Observable} from 'rxjs/Observable';
 import {Response} from '@angular/http';
 import {Data} from './data.ts';
 import {Subscription} from 'rxjs';
-//import { DatePickerOptions, DateModel } from 'ng2-datepicker';
 /*
 
  import { FormsModule } from '@angular/forms';
@@ -83,16 +82,22 @@ import {Subscription} from 'rxjs';
         <div class="row">
             <div class="col-md-6 col-sm-6">
             <h3>Все топики в базе</h3>
-                <ol *ngFor="let item of topicNames; let i = index;" class="topic">
+                <ol *ngFor="let item of topicNamesPreview; let i = index;" class="topic">
                     {{i + 1}}: {{item}}
-                    <input type="checkbox" (change)="onChangeTopics(item, $event.target.checked)">
+                    <input type="checkbox" (change)="onChangeTopics(item, $event.target.checked)" [(ngModel)]="topicPreviewState[i]">
                 </ol>
             </div>
             <div class="col-md-3 col-sm-3">
             <h3>Tags</h3>
                 <ol *ngFor="let tag of topicTags; let i = index;" class="topic">
                     {{i + 1}}
-                    <button (click)="tagCheck(tag, $event.target)" id="tagcheck">{{tag}}</button>
+                    <button aria-pressed="false"
+                    (click)="onChangeTags(tag, $event.target.getAttribute('aria-pressed'))"
+                    id="tagcheck" type="button"
+                    class="btn btn-default"
+                    data-toggle="button">
+                    {{tag}}
+                    </button>
                 </ol>
             </div>
             <!--<label *ngFor="let tag of topicTags; let i = index;" class="btn btn-primary" [(ngModel)]="checkButtonModel"  btnCheckbox>{{tag}}</label> -->
@@ -104,8 +109,11 @@ export class AppComponent implements OnInit {
 
     title: string;
     topic: string;
+    topicPreviewState: any[] = [];
     topicNames: any[];
+    topicNamesPreview: any[];
     topicTags: any[];
+    topicTagsForSearch: any[] = [];
     showTodayBtn = false;
 
     fromDate: number;
@@ -136,12 +144,54 @@ export class AppComponent implements OnInit {
         domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
     };
 
-    tagCheck(name:string, event: any) {
+    onChangeTags(name:string, event: any) {
         console.log(name);
         console.log(event);
-        if (name){
+        if (event === 'false') {
+            event = true;
+            //this.topicTagsForSearch = tagSelected;
+            let newTags = this.topicTagsForSearch.concat(name);
+            this.topicTagsForSearch = newTags;
+            //console.log(this.topicTagsForSearch);
             this.logService.write('Add tag ' + name);
-            this.logService.write('Remove tag ' + name); //todo toggle button
+
+        } else {
+            event = false;
+            let tagSelected = this.topicTagsForSearch.filter(function(item){
+                return item != name;
+            });
+            this.topicTagsForSearch = tagSelected;
+            //console.log(this.topicTagsForSearch);
+            this.logService.write('Remove tag ' + name);
+        }
+        console.log(this.topicTagsForSearch);
+        console.log(event);
+        this.previewTopicsByTags();
+    }
+
+    previewTopicsByTags() {
+        let _topicNamesPreview = [];
+        if (this.topicTagsForSearch.length > 0) {
+        for (let topic of this.topicNames) {
+            let counter = 0;
+                for (let item of this.topicTagsForSearch) {
+                    if (topic.indexOf(item) === -1) {
+                        console.log(`The item ${item} not found`;
+                    )
+                    } else {
+                        console.log(`The item ${item} is found`);
+                        counter++;
+                    }
+                }
+                if (counter === this.topicTagsForSearch.length) {
+                    _topicNamesPreview = _topicNamesPreview.concat(topic);
+                    this.topicNamesPreview = _topicNamesPreview.slice();
+                    console.log(this.topicNamesPreview);
+                }
+        }
+    } else {
+        this.topicNamesPreview = this.topicNames.slice();
+            console.log(this.topicNamesPreview);
         }
     }
 
@@ -208,6 +258,10 @@ export class AppComponent implements OnInit {
         this.logService.write("Инициализация компонента App");
         setInterval(this.updateData.bind(this), 8000);
 
+        //var tagStateDefault = document.getElementById("tagcheck");
+
+        //tagStateDefault.setAttribute('aria-pressed', false);
+
     }
     ngAfterViewInit() {
         this.requestTopics();
@@ -243,6 +297,7 @@ export class AppComponent implements OnInit {
             }
             this.topicNames = arr;
             console.log(this.topicNames);
+            this.topicNamesPreview = this.topicNames.slice();
             this.drawTags();
         });
     }
