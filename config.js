@@ -17,7 +17,7 @@ System.config({
         '@angular/http': 'node_modules/@angular/http/bundles/http.umd.js',
         '@angular/compiler': 'node_modules/@angular/compiler/bundles/compiler.umd.js',
         '@angular/common': 'node_modules/@angular/common/bundles/common.umd.js',
-        '@angular/platform-browser-dynamic': 'https://npmcdn.com/@angular/platform-browser-dynamic@4.0.1/bundles/platform-browser-dynamic.umd.js',
+        '@angular/platform-browser-dynamic': 'node_modules/@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.js',
         '@angular/platform-browser': 'https://npmcdn.com/@angular/platform-browser@4.0.1/bundles/platform-browser.umd.js',
         '@angular/animations': 'https://npmcdn.com/@angular/animations@4.0.1/bundles/animations.umd.js',
         '@angular/platform-browser/animations': 'https://npmcdn.com/@angular/platform-browser@4.0.1/bundles/platform-browser-animations.umd.js',

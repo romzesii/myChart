@@ -56,7 +56,6 @@ export class GraphDataService{
             for (let j = 0; j < domain.length; j++){
                 const value = Math.floor(50 + Math.random() * 50); // temperature from 50 to 100.
                 const timestamp = domain[j];
-
                 series.series.push({
                     value,
                     name: timestamp

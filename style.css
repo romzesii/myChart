@@ -22,6 +22,10 @@ body{
 
 #tagcheck{
     background-color: #e0f2f1;
+    margin: 1%;
+    font-size: 2rem;
+    width:160px;
+    height:40px;
 }
 #tagcheck.active{
     background-color: #ff9d23;

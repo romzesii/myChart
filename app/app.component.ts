@@ -60,48 +60,47 @@ import {Subscription} from 'rxjs';
         </div>
     </div>
     <div class="row">
-    <div class="col-md-12 col-sm-12">
-    <ngx-charts-line-chart
-      [view]="view"
-      [scheme]="colorScheme"
-      [results]="multi"
-      [gradient]="gradient"
-      [xAxis]="showXAxis"
-      [yAxis]="showYAxis"
-      [legend]="showLegend"
-      [timeline]="timeline"
-      [showXAxisLabel]="showXAxisLabel"
-      [showYAxisLabel]="showYAxisLabel"
-      [xAxisLabel]="xAxisLabel"
-      [yAxisLabel]="yAxisLabel"
-      [autoScale]="autoScale"
-      (select)="onSelect($event)">
-    </ngx-charts-line-chart>
-    </div>
-    </div>
-        <div class="row">
-            <div class="col-md-6 col-sm-6">
-            <h3>Все топики в базе</h3>
-                <ol *ngFor="let item of topicNamesPreview; let i = index;" class="topic">
-                    {{i + 1}}: {{item}}
-                    <input type="checkbox" (change)="onChangeTopics(item, $event.target.checked)" [(ngModel)]="topicPreviewState[item]">
-                </ol>
-            </div>
-            <div class="col-md-3 col-sm-3">
-            <h3>Tags</h3>
-                <ol *ngFor="let tag of topicTags; let i = index;" class="topic">
-                    {{i + 1}}
-                    <button aria-pressed="false"
+        <div class="col-md-12 col-sm-12">
+            <h3>Теги</h3>
+                <button *ngFor="let tag of topicTags; let i = index;" 
+                    aria-pressed="false"
                     (click)="onChangeTags(tag, $event.target.getAttribute('aria-pressed'))"
                     id="tagcheck" type="button"
                     class="btn btn-default"
                     data-toggle="button">
                     {{tag}}
-                    </button>
+                </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <h3>{{topicTagsForSearch.length ? 'Топики по тегу' : 'Все топики в базе'}}</h3>
+                <ol *ngFor="let item of topicNamesPreview; let i = index;" class="topic">
+                    {{i + 1}}: {{item}}
+                    <input type="checkbox" (change)="onChangeTopics(item, $event.target.checked)" [(ngModel)]="topicPreviewState[item]">
                 </ol>
-            </div>
-            <!--<label *ngFor="let tag of topicTags; let i = index;" class="btn btn-primary" [(ngModel)]="checkButtonModel"  btnCheckbox>{{tag}}</label> -->
-            
+        </div>
+    </div> 
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <ngx-charts-line-chart
+              [view]="view"
+              [scheme]="colorScheme"
+              [results]="multi"
+              [gradient]="gradient"
+              [xAxis]="showXAxis"
+              [yAxis]="showYAxis"
+              [legend]="showLegend"
+              [timeline]="timeline"
+              [showXAxisLabel]="showXAxisLabel"
+              [showYAxisLabel]="showYAxisLabel"
+              [xAxisLabel]="xAxisLabel"
+              [yAxisLabel]="yAxisLabel"
+              [autoScale]="autoScale"
+              (select)="onSelect($event)">
+            </ngx-charts-line-chart>
+        </div>
+    </div>  
     </div>
   `
 })
@@ -124,6 +123,7 @@ export class AppComponent implements OnInit {
     view:any[] = [700, 400];
 
     // options
+    legendTitle = 'Топики';
     showXAxis = true;
     showYAxis = true;
     gradient = false;
@@ -134,6 +134,7 @@ export class AppComponent implements OnInit {
     yAxisLabel = 'Temperature';
     update:number = 0;
     realTimeData:boolean = false;
+
     rooms:any[];
     newTime:number = 0;
     timeline = false;
@@ -236,8 +237,7 @@ export class AppComponent implements OnInit {
         }
     }
     buildGraphic(data:any[]){
-        let newMulti = this.multi.concat(data[0]);
-        this.multi = newMulti;
+        this.multi = this.multi.concat(data[0]);
         console.log('построение графика' + this.multi);
     }
 
