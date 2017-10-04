@@ -1,0 +1,21 @@
+{
+  "name": "myChart",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Romzesii <drv2012@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/romzesii/myChart",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-toggle": "^2.2.2"
+  }
+}

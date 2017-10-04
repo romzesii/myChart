@@ -84,7 +84,7 @@ import {Subscription} from 'rxjs';
             <h3>Все топики в базе</h3>
                 <ol *ngFor="let item of topicNamesPreview; let i = index;" class="topic">
                     {{i + 1}}: {{item}}
-                    <input type="checkbox" (change)="onChangeTopics(item, $event.target.checked)" [(ngModel)]="topicPreviewState[i]">
+                    <input type="checkbox" (change)="onChangeTopics(item, $event.target.checked)" [(ngModel)]="topicPreviewState[item]">
                 </ol>
             </div>
             <div class="col-md-3 col-sm-3">
@@ -176,8 +176,7 @@ export class AppComponent implements OnInit {
             let counter = 0;
                 for (let item of this.topicTagsForSearch) {
                     if (topic.indexOf(item) === -1) {
-                        console.log(`The item ${item} not found`;
-                    )
+                        console.log(`The item ${item} not found`);
                     } else {
                         console.log(`The item ${item} is found`);
                         counter++;
