@@ -76,8 +76,8 @@ import {Subscription} from 'rxjs';
         <div class="col-md-12 col-sm-12">
             <h3>{{topicTagsForSearch.length ? 'Топики по тегу' : 'Все топики в базе'}}</h3>
                 <ol *ngFor="let item of topicNamesPreview; let i = index;" class="topic">
-                    {{i + 1}}: {{item}}
-                    <input type="checkbox" (change)="onChangeTopics(item, $event.target.checked)" [(ngModel)]="topicPreviewState[item]">
+                   <input type="checkbox" (change)="onChangeTopics(item, $event.target.checked)" [(ngModel)]="topicPreviewState[item]">
+                   {{item}}
                 </ol>
         </div>
     </div> 
@@ -236,8 +236,31 @@ export class AppComponent implements OnInit {
             this.multi = newMulti;
         }
     }
-    buildGraphic(data:any[]){
-        this.multi = this.multi.concat(data[0]);
+    dateReviver(response){
+        //console.log(response.series[0].name);
+        //console.log(typeof(response.series[0].name));
+        //console.log(new Date(response.series[0].name));
+        let _response = JSON.stringify(response);
+        let res = JSON.parse(_response, function(key, value) {
+            if (key == 'name') {
+                try{
+                    return new Date(value);
+                } catch (err){
+                    return value;
+                }
+            }
+            return value;
+        });
+        if (res.hasOwnProperty('topicName')){
+            res.name = res.topicName;
+            delete res.topicName;
+        }
+        console.log(res);
+        return res;
+    }
+
+    buildGraphic(data:any){
+        this.multi = this.multi.concat(data);
         console.log('построение графика' + this.multi);
     }
 
@@ -279,8 +302,8 @@ export class AppComponent implements OnInit {
         this.apiResponseSubscription = this.graphDataService.getData(req).subscribe((response) => {
             console.debug(response);
             //this.multi = response;
-            this.buildGraphic(response);
-            console.log(response);
+            this.buildGraphic(this.dateReviver(response));
+            console.log(typeof(response));
         });
     }
 
