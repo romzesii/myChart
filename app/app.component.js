@@ -171,9 +171,9 @@ var AppComponent = (function () {
             }
             return value;
         });
-        if (res.hasOwnProperty('topicName')) {
-            res.name = res.topicName;
-            delete res.topicName;
+        if (res.hasOwnProperty('_name')) {
+            res.name = res['_name'];
+            delete res['_names'];
         }
         console.log(res);
         return res;

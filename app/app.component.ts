@@ -240,7 +240,7 @@ export class AppComponent implements OnInit {
         //console.log(response.series[0].name);
         //console.log(typeof(response.series[0].name));
         //console.log(new Date(response.series[0].name));
-        let _response = JSON.stringify(response);
+        const _response = JSON.stringify(response);
         let res = JSON.parse(_response, function(key, value) {
             if (key == 'name') {
                 try{
@@ -251,9 +251,9 @@ export class AppComponent implements OnInit {
             }
             return value;
         });
-        if (res.hasOwnProperty('topicName')){
-            res.name = res.topicName;
-            delete res.topicName;
+        if (res.hasOwnProperty('_name')){
+            res.name = res['_name'];
+            delete res['_names'];
         }
         console.log(res);
         return res;
